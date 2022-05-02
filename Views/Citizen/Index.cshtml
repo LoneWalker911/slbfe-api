@@ -1,0 +1,179 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div id="divCitizens" class="d-flex justify-content-center" v-cloak>
+    <div class="jumbotron">
+        <div class="card-body">
+            <form id="frmCitizen" v-if="editCitizen">
+                <div class="form-row">
+                    <div class="form-group col-12">
+                        <div class="form-field mb-2">
+                            <label class="form-label">First Name</label>
+                            <input type="text" class="form-control" placeholder="" v-model="editCitizen.first_name">
+                        </div>
+                    </div>
+                    <div class="form-group col-12">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" class="form-control" placeholder="" v-model="editCitizen.last_name">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-12 float-start px-0 px-md-1">
+                        <div class="form-field mb-2">
+                            <template>
+                                <v-select v-model="editCitizen.professions"
+                                          :reduce="Pro => Pro.ID"
+                                          label="Pro"
+                                          :options="professions"
+                                          placeholder="Select Professions"
+                                          :loading="!professions.length" />
+                                <template #spinner="{ loading }">
+                                    <div v-if="loading" style="border-left-color: rgba(88, 151, 251, 0.71)" class="vs__spinner">
+                                    </div>
+                                </template>
+                                <template #search="{attributes, events}">
+                                    <input class="vs__search"
+                                           :required="!professionId"
+                                           v-bind="attributes"
+                                           v-on="events" />
+                                </template>
+                            </template>
+                        </div>
+                    </div>
+                    <div class="col-6 float-start px-0 px-md-1">
+                        <div class="form-field mb-2">
+                            <label class="form-label">Affiliation</label>
+                            <input type="text" class="form-control" placeholder="" v-model="editCitizen.affiliation">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 float-start px-0 px-md-1">
+                    <div class="form-field mb-2">
+                        <label class="form-label">Email</label>
+                        <input type="text" class="form-control" placeholder="" v-model="editCitizen.email">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-6 float-start px-0 px-md-1">
+                        <div class="form-field mb-2">
+                            <label class="form-label">Password</label>
+                            <input type="text" class="form-control" placeholder="" v-model="editCitizen.password">
+                        </div>
+                    </div>
+                    <div class="col-6 float-start px-0 px-md-1">
+                        <div class="form-field mb-2">
+                            <label class="form-label">Date Of Birth</label>
+                            <input type="text" class="form-control" placeholder="" v-model="editCitizen.dob">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-6 float-start px-0 px-md-1">
+                        <div class="form-field mb-2">
+                            <label class="form-label">NIC</label>
+                            <input type="text" class="form-control" placeholder="" v-model="editCitizen.nic">
+                        </div>
+                    </div>
+                    <div class="col-6 float-start px-0 px-md-1">
+                        <div class="form-field mb-2">
+                            <label class="form-label">Contact Number</label>
+                            <input type="text" class="form-control" placeholder="" v-model="editCitizen.Contact1">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-6 float-start px-0 px-md-1">
+                        <div class="form-field mb-2">
+                            <label class="form-label">Contact Number</label>
+                            <input type="text" class="form-control" placeholder="" v-model="editCitizen.latitude">
+                        </div>
+                    </div>
+                    <div class="col-6 float-start px-0 px-md-1">
+                        <div class="form-field mb-2">
+                            <label class="form-label">Contact Number</label>
+                            <input type="text" class="form-control" placeholder="" v-model="editCitizen.longitude">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-6 float-start px-0 px-md-1">
+                        <div class="form-field mb-2">
+                            <label class="form-label">Contact </label>
+                            <input type="text" class="form-control" placeholder="" v-model="editCitizen.Contact1">
+                        </div>
+                    </div>
+                    <div class="col-6 float-start px-0 px-md-1">
+                        <div class="form-field mb-2">
+                            <label class="form-label">Password</label>
+                            <input type="text" class="form-control" placeholder="" v-model="editCitizen.ContactName1">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-6 float-start px-0 px-md-1">
+                        <div class="form-field mb-2">
+                            <label class="form-label">Contact Number</label>
+                            <input type="text" class="form-control" placeholder="" v-model="editCitizen.Contact2">
+                        </div>
+                    </div>
+                    <div class="col-6 float-start px-0 px-md-1">
+                        <div class="form-field mb-2">
+                            <label class="form-label">Contact Number</label>
+                            <input type="text" class="form-control" placeholder="" v-model="editCitizen.ContactName2">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" @@click="addCitizen" class="btn-primary">Add Citizen</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+<script>
+    Vue.config.devtools = true;
+
+    if (vueCitizens != null) {
+        vueCitizens.$destroy();
+    }
+    Vue.component("v-select", VueSelect.VueSelect);
+
+    var vueCitizens = new Vue({
+        el: '#divCitizens',
+        data: {
+            editCitizen: {},
+            professions: [],
+            professionId: null,
+
+
+        },
+        methods: {
+            addCitizen() {
+                $.post('https://edu.santhawa.lk/apiv1/citizen', vueCitizens.editCitizen, function (response) {
+                    console.log(response);
+                    alert("success");
+                })
+                    .fail(function (response) { alert('Error' + response.responseText) });
+            },
+            getProfessions() {
+                $.get('https://edu.santhawa.lk/apiv1/citizen/professions?format=json', function (data, status, response) {
+                    vueCitizens.professions = data;
+                    console.log(response);
+                })
+            }
+
+
+
+        },
+        computed: {
+        },
+        mounted() {
+            this.getProfessions();
+        },
+    });
+
+</script>
+}
