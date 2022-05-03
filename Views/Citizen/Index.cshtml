@@ -22,7 +22,7 @@
                     <div class="col-12 float-start px-0 px-md-1">
                         <div class="form-field mb-2">
                             <template>
-                                <v-select v-model="editCitizen.professions"
+                                <v-select v-model="editCitizen.profession"
                                           :reduce="Pro => Pro.ID"
                                           label="Pro"
                                           :options="professions"
@@ -64,7 +64,7 @@
                     <div class="col-6 float-start px-0 px-md-1">
                         <div class="form-field mb-2">
                             <label class="form-label">Date Of Birth</label>
-                            <input type="text" class="form-control" placeholder="" v-model="editCitizen.dob">
+                            <input type="text" class="form-control datepicker-input" placeholder="" v-model="editCitizen.dob">
                         </div>
                     </div>
                 </div>
@@ -85,45 +85,32 @@
                 <div class="form-row">
                     <div class="col-6 float-start px-0 px-md-1">
                         <div class="form-field mb-2">
-                            <label class="form-label">Contact Number</label>
-                            <input type="text" class="form-control" placeholder="" v-model="editCitizen.latitude">
-                        </div>
-                    </div>
-                    <div class="col-6 float-start px-0 px-md-1">
-                        <div class="form-field mb-2">
-                            <label class="form-label">Contact Number</label>
-                            <input type="text" class="form-control" placeholder="" v-model="editCitizen.longitude">
-                        </div>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="col-6 float-start px-0 px-md-1">
-                        <div class="form-field mb-2">
-                            <label class="form-label">Contact </label>
-                            <input type="text" class="form-control" placeholder="" v-model="editCitizen.Contact1">
-                        </div>
-                    </div>
-                    <div class="col-6 float-start px-0 px-md-1">
-                        <div class="form-field mb-2">
-                            <label class="form-label">Password</label>
+                            <label class="form-label">Contact Name</label>
                             <input type="text" class="form-control" placeholder="" v-model="editCitizen.ContactName1">
                         </div>
                     </div>
+                    <div class="col-6 float-start px-0 px-md-1">
+                        <div class="form-field mb-2">
+                            <label class="form-label">Contact Number 2</label>
+                            <input type="text" class="form-control" placeholder="" v-model="editCitizen.Contact2">
+                        </div>
+                    </div>
                 </div>
                 <div class="form-row">
                     <div class="col-6 float-start px-0 px-md-1">
                         <div class="form-field mb-2">
-                            <label class="form-label">Contact Number</label>
-                            <input type="text" class="form-control" placeholder="" v-model="editCitizen.Contact2">
-                        </div>
-                    </div>
-                    <div class="col-6 float-start px-0 px-md-1">
-                        <div class="form-field mb-2">
-                            <label class="form-label">Contact Number</label>
+                            <label class="form-label">Contact Name 2</label>
                             <input type="text" class="form-control" placeholder="" v-model="editCitizen.ContactName2">
                         </div>
                     </div>
                 </div>
+                <div class="form-row">
+                    <div class="col-12 float-start px-0 px-md-1">
+                        <div id="map" style="width:100%;height:400px;"></div>
+                    </div>
+                </div>
+
+
 
                 <button type="button" @@click="addCitizen" class="btn-primary">Add Citizen</button>
             </form>
@@ -131,7 +118,7 @@
     </div>
 </div>
 
-@section Scripts {
+@section Scripts {  
 
 <script>
     Vue.config.devtools = true;
@@ -147,13 +134,14 @@
             editCitizen: {},
             professions: [],
             professionId: null,
+            location: {},
+            
 
 
         },
         methods: {
             addCitizen() {
                 $.post('https://edu.santhawa.lk/apiv1/citizen', vueCitizens.editCitizen, function (response) {
-                    console.log(response);
                     alert("success");
                 })
                     .fail(function (response) { alert('Error' + response.responseText) });
@@ -161,10 +149,40 @@
             getProfessions() {
                 $.get('https://edu.santhawa.lk/apiv1/citizen/professions?format=json', function (data, status, response) {
                     vueCitizens.professions = data;
-                    console.log(response);
                 })
-            }
+            },
+            initMap() {
+                const myLatlng = { lat: -25.363, lng: 131.044 };
+                const map = new google.maps.Map(document.getElementById("map"), {
+                    zoom: 4,
+                    center: myLatlng,
+                });
+                // Create the initial InfoWindow.
+                let infoWindow = new google.maps.InfoWindow({
+                    content: "Click the map to get Lat/Lng!",
+                    position: myLatlng,
+                });
 
+                infoWindow.open(map);
+                // Configure the click listener.
+                map.addListener("click", (mapsMouseEvent) => {
+
+                    this.location = mapsMouseEvent.latLng.toJSON();
+                    vueCitizens.editCitizen.latitude = this.location.lat.toFixed(6);
+                    vueCitizens.editCitizen.longitude = this.location.lng.toFixed(6);
+                    // Close the current InfoWindow.
+                    infoWindow.close();
+                    // Create a new InfoWindow.
+                    infoWindow = new google.maps.InfoWindow({
+                        position: mapsMouseEvent.latLng,
+                    });
+                    infoWindow.setContent(
+                        JSON.stringify(mapsMouseEvent.latLng.toJSON(), null, 2)
+                    );
+                    infoWindow.open(map);
+                    
+                });
+            },
 
 
         },
@@ -172,8 +190,15 @@
         },
         mounted() {
             this.getProfessions();
+            window.initMap = this.initMap;
+           
         },
     });
-
+    $(function () {
+        jQuery('.datepicker-input').datetimepicker({
+            timepicker: false,
+            format: 'd/m/Y'
+        });
+    });
 </script>
 }
