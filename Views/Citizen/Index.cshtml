@@ -2,25 +2,27 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<div id="divCitizens" class="d-flex justify-content-center" v-cloak>
+<div id="divCitizens" class="justify-content-center" v-cloak>
     <div class="jumbotron">
-        <div class="card-body">
+        <div class="card-body ">
             <form id="frmCitizen" v-if="editCitizen">
+                <h3>Citizen Registraion</h3>
                 <div class="form-row">
-                    <div class="form-group col-12">
+                    <div class="form-group col-6">
                         <div class="form-field mb-2">
                             <label class="form-label">First Name</label>
                             <input type="text" class="form-control" placeholder="" v-model="editCitizen.first_name">
                         </div>
                     </div>
-                    <div class="form-group col-12">
+                    <div class="form-group col-6">
                         <label class="form-label">Last Name</label>
                         <input type="text" class="form-control" placeholder="" v-model="editCitizen.last_name">
                     </div>
                 </div>
                 <div class="form-row">
-                    <div class="col-12 float-start px-0 px-md-1">
+                    <div class="col-6 float-start px-0 px-md-1">
                         <div class="form-field mb-2">
+                            <label class="form-label">Select Your Profession</label>
                             <template>
                                 <v-select v-model="editCitizen.profession"
                                           :reduce="Pro => Pro.ID"
@@ -48,12 +50,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-12 float-start px-0 px-md-1">
-                    <div class="form-field mb-2">
-                        <label class="form-label">Email</label>
-                        <input type="text" class="form-control" placeholder="" v-model="editCitizen.email">
-                    </div>
-                </div>
                 <div class="form-row">
                     <div class="col-6 float-start px-0 px-md-1">
                         <div class="form-field mb-2">
@@ -77,7 +73,28 @@
                     </div>
                     <div class="col-6 float-start px-0 px-md-1">
                         <div class="form-field mb-2">
-                            <label class="form-label">Contact Number</label>
+                            <label class="form-label">Email</label>
+                            <input type="text" class="form-control" placeholder="" v-model="editCitizen.email">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-12 float-start px-0 px-md-1">
+                        <label class="form-label">Select Your Location</label>
+                        <div id="map" style="width:100%;height:400px;"></div>
+                    </div>
+                </div>
+                &nbsp;
+                <div class="form-row">
+                    <div class="col-6 float-start px-0 px-md-1">
+                        <div class="form-field mb-2">
+                            <label class="form-label">Contact Name I</label>
+                            <input type="text" class="form-control" placeholder="" v-model="editCitizen.ContactName1">
+                        </div>
+                    </div>
+                    <div class="col-6 float-start px-0 px-md-1">
+                        <div class="form-field mb-2">
+                            <label class="form-label">Contact Number II</label>
                             <input type="text" class="form-control" placeholder="" v-model="editCitizen.Contact1">
                         </div>
                     </div>
@@ -85,34 +102,30 @@
                 <div class="form-row">
                     <div class="col-6 float-start px-0 px-md-1">
                         <div class="form-field mb-2">
-                            <label class="form-label">Contact Name</label>
-                            <input type="text" class="form-control" placeholder="" v-model="editCitizen.ContactName1">
+                            <label class="form-label">Contact Name II</label>
+                            <input type="text" class="form-control" placeholder="" v-model="editCitizen.ContactName2">
                         </div>
                     </div>
                     <div class="col-6 float-start px-0 px-md-1">
                         <div class="form-field mb-2">
-                            <label class="form-label">Contact Number 2</label>
+                            <label class="form-label">Contact Number II</label>
                             <input type="text" class="form-control" placeholder="" v-model="editCitizen.Contact2">
                         </div>
                     </div>
                 </div>
+                &nbsp;
                 <div class="form-row">
                     <div class="col-6 float-start px-0 px-md-1">
                         <div class="form-field mb-2">
-                            <label class="form-label">Contact Name 2</label>
-                            <input type="text" class="form-control" placeholder="" v-model="editCitizen.ContactName2">
+                            <button type="button" class="col-12 btn btn-warning btn-lg">Reset</button>
+                        </div>
+                    </div>
+                    <div class="col-6 float-start px-0 px-md-1">
+                        <div class="form-field mb-2">
+                            <button type="button" @@click="addCitizen" class="col-12 btn btn-primary btn-lg">Save Citizen</button>
                         </div>
                     </div>
                 </div>
-                <div class="form-row">
-                    <div class="col-12 float-start px-0 px-md-1">
-                        <div id="map" style="width:100%;height:400px;"></div>
-                    </div>
-                </div>
-
-
-
-                <button type="button" @@click="addCitizen" class="btn-primary">Add Citizen</button>
             </form>
         </div>
     </div>

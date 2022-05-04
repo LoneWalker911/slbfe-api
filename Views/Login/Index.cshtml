@@ -1,0 +1,90 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LoginLayoutPage.cshtml";
+}
+<div id="divLogin" class="divLogin">
+    <section class="form my-4 mx-5">
+        <div class="container">
+            <div class="row no-gutters">
+                <div class="col-lg-5">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiB9t90MaeaSUiDNWPfZzBR_irRsV0GgCXGA&usqp=CAU"
+                         class="img-fluid"
+                         alt="" />
+                </div>
+                <div class="col-lg-7 px-5 pt-5">
+                    <h1 class="font-weight-bold py-3">CDC</h1>
+                    <h4>Sign in to your account</h4>
+                    <form name="loginForm" onsubmit="return login()">
+                        <div class="form-row">
+                            <div class="col-lg-7">
+                                <input type="email"
+                                       placeholder="Enter Username"
+                                       class="form-control my-3 p-2"
+                                       id="email"
+                                       v-model="editLogin.username" />
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-lg-7">
+                                <input type="password"
+                                       placeholder="Enter password"
+                                       class="form-control my-3 p-2"
+                                       id="pass"
+                                       v-model="editLogin.password" />
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-lg-7">
+                                <button type="button" @@click="login" class="btn1 mt-3 mb-5">Login</button>
+                            </div>
+                        </div>
+                        <a href="forgotPassword.html">Forgot Password</a>
+                        <p>
+                            Don't have an account? <a href="register.html">Register here</a>
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+
+    <script>
+        Vue.config.devtools = true;
+
+        if (vueLogins != null) {
+            vueLogins.$destroy();
+        }
+
+        var vueLogins = new Vue({
+            el: '#divCitizens',
+            data: {
+                editLogin: {},
+
+
+
+            },
+            methods: {
+                login() {
+                    $.post('http://localhost/slbfe-api/apiv1/login', vueCitizens.editLogin, function (response) {
+                        alert("success");
+                    })
+                        .fail(function (response) { alert('Error' + response.responseText) });
+                },
+
+
+            },
+            computed: {
+            },
+            mounted() {
+
+            },
+        });
+    </script>
+}
+
+
+
