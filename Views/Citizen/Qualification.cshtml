@@ -1,0 +1,127 @@
+﻿
+@{
+    ViewBag.Title = "Qualification";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="divCitizenQualifications" align="center">
+    <form method="post" action="" enctype="multipart/form-data"
+          id="myform">
+
+        <div>
+            <input type="file" id="cv" name="cv" />
+            <input type="file" id="birthcert" name="birthcert" />
+            <input type="file" id="passport" name="passport" />
+            <button type="button" class="button" value="Upload" @@click="update"
+                    id="butn_upload">
+                Test
+            </button>
+        </div>
+       
+    </form>
+</div>
+
+@section Scripts {
+
+    <script>
+    Vue.config.devtools = true;
+
+    if (vueCitizenQualifications != null) {
+        vueCitizenQualifications.$destroy();
+    }
+
+
+    var vueCitizenQualifications = new Vue({
+        el: '#divCitizenQualifications',
+        data: {
+            qualifications: {qualifications:"JKJKJKJ"},
+
+
+        },
+        methods: {
+            update() {
+                var url = "https://edu.santhawa.lk/apiv1/citizen/20";
+
+                var xhr = new XMLHttpRequest();
+                xhr.open("PUT", url);
+
+                xhr.setRequestHeader("Content-Type", "application/json");
+
+                xhr.setRequestHeader("Authorization" , "F5JXJ4j6qGx29JVMu6xrBBPubBoxHQDT");
+
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4) {
+                        console.log(xhr.status);
+                        console.log(xhr.responseText);
+                    }
+                };
+
+                var data = `{
+                  "qualifications": vueCitizenQualifications,
+                }`;
+
+                xhr.send(JSON.stringify(vueCitizenQualifications.qualifications));
+            }
+        },
+        computed: {
+        },
+        mounted() {
+
+        },
+    });
+        $(document).ready(function () {
+            $("#but_uplfoad").click(function () {
+                var fd = new FormData();
+                var cv = $('#cv')[0].files[0];
+                var birthcert = $('#birthcert')[0].files[0];
+                var passport = $('#passport')[0].files[0];
+                fd.append('cv', cv);
+                fd.append('birthcert', birthcert);
+                fd.append('passport', passport);
+
+                $.ajax({
+                    url: 'https://edu.santhawa.lk/apiv1/citizen/17',
+                    type: 'post',
+                    data: fd,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        if (response != 0) {
+                            alert('file uploaded');
+                        }
+                        else {
+                            alert('file not uploaded');
+                        }
+                    },
+                });
+            });
+        });
+        //$(document).ready(function () {
+        //    $("#butn_upload").click(function () {
+               
+
+        //        $.ajax({
+        //            url: 'https://edu.santhawa.lk/apiv1/citizen/17',
+        //            headers: {'x-some-other-header': 'some value'},
+        //            type: 'PUT',
+        //            data: 'A/L',
+        //            contentType: false,
+        //            processData: false,
+        //            success: function (response) {
+        //                if (response != 0) {
+        //                    alert('file uploaded');
+        //                }
+        //                else {
+        //                    alert('file not uploaded');
+        //                }
+        //            },
+        //        });
+        //    });
+        //});
+       
+    </script>
+}
+
+
+
+

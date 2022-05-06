@@ -1,0 +1,184 @@
+﻿
+@{
+    ViewBag.Title = "CitizenDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div id="divCitizenDetails" class="justify-content-center" v-cloak>
+    <div class="jumbotron">
+        <div class="card-body ">
+            <form id="frmCitizenDetails">
+                <h3>Citizen Details</h3>
+                <div class="form-row">
+                    <div class="form-group col-6">
+                        <div class="form-field mb-2">
+                            <label class="form-label">First Name</label>
+                            <input type="text" class="form-control" placeholder="" v-model="editCitizenNic.nic">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-6 float-start px-0 px-md-1">
+                        <div class="form-field mb-2">
+                            <button type="button" @@click="getCitizenDetail" class="col-12 btn btn-primary btn-lg">Search</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-6">
+                        <div class="form-field mb-2">
+                            <label class="form-label">First Name</label>
+                            <input type="text" class="form-control" placeholder="" v-model="editCitizen.first_name">
+                        </div>
+                    </div>
+                    <div class="form-group col-6">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" class="form-control" placeholder="" v-model="editCitizen.last_name">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-6 float-start px-0 px-md-1">
+                        <div class="form-field mb-2">
+                            <label class="form-label">Profession</label>
+                            <input type="text" class="form-control" placeholder="" v-model="editCitizen.profession">
+                        </div>
+                    </div>
+
+                    <div class="col-6 float-start px-0 px-md-1">
+                        <div class="form-field mb-2">
+                            <label class="form-label">Affiliation</label>
+                            <input type="text" class="form-control" placeholder="" v-model="editCitizen.affiliation">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-6 float-start px-0 px-md-1">
+                        <div class="form-field mb-2">
+                            <label class="form-label">Date Of Birth</label>
+                            <input type="text" class="form-control datepicker-input" placeholder="" v-model="editCitizen.dob">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-6 float-start px-0 px-md-1">
+                        <div class="form-field mb-2">
+                            <label class="form-label">Email</label>
+                            <input type="text" class="form-control" placeholder="" v-model="editCitizen.email">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-12 float-start px-0 px-md-1">
+                        <label class="form-label">Select Your Location</label>
+                        <div id="map" style="width:100%;height:400px;"></div>
+                    </div>
+                </div>
+                &nbsp;
+                <div class="form-row">
+                    <div class="col-6 float-start px-0 px-md-1">
+                        <div class="form-field mb-2">
+                            <label class="form-label">Contact Name I</label>
+                            <input type="text" class="form-control" placeholder="" v-model="editCitizen.ContactName1">
+                        </div>
+                    </div>
+                    <div class="col-6 float-start px-0 px-md-1">
+                        <div class="form-field mb-2">
+                            <label class="form-label">Contact Number II</label>
+                            <input type="text" class="form-control" placeholder="" v-model="editCitizen.Contact1">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-6 float-start px-0 px-md-1">
+                        <div class="form-field mb-2">
+                            <label class="form-label">Contact Name II</label>
+                            <input type="text" class="form-control" placeholder="" v-model="editCitizen.ContactName2">
+                        </div>
+                    </div>
+                    <div class="col-6 float-start px-0 px-md-1">
+                        <div class="form-field mb-2">
+                            <label class="form-label">Contact Number II</label>
+                            <input type="text" class="form-control" placeholder="" v-model="editCitizen.Contact2">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const param = urlParams.get('nic');
+
+        var markers = [];
+
+        function clearMarkers() {
+            for (var i = 0; i < markers.length; i++) {
+                markers[i].setMap(null);
+            }
+            markers.length = 0;
+        }
+
+    Vue.config.devtools = true;
+
+    if (vueCitizenDetails != null) {
+        vueCitizenDetails.$destroy();
+    }
+
+    var vueCitizenDetails = new Vue({
+        el: '#divCitizenDetails',
+        data: {
+            editCitizenNic: { nic: param },
+            editCitizen: {},
+            map: null,
+
+
+
+        },
+        methods: {
+            getCitizenDetail() {
+                $.ajax({
+                    url: 'https://edu.santhawa.lk/apiv1/citizen/' + String(this.editCitizenNic.nic),
+                    type: 'GET',
+                    contentType: 'application/json',
+                    headers: { "Authorization": "6mqWCdDlqjeDDEOb67MI6qES2M0XnFQx" },
+                    success: function (data, status, response) {
+                        console.log(data);
+                        clearMarkers();
+                        vueCitizenDetails.editCitizen = JSON.parse(response.responseText);
+                        var myLatlng = new google.maps.LatLng((vueCitizenDetails.editCitizen.latitude), (vueCitizenDetails.editCitizen.longitude))
+                        var marker = new google.maps.Marker({ position: myLatlng, title: "Citizen's Location", });
+                        markers.push(marker);
+                        marker.setMap(vueCitizenDetails.map);
+                        vueCitizenDetails.map.panTo(myLatlng);
+                        
+                    },
+                });
+            },
+            initMap() {
+                const defLatLng = { lat: 25.363, lng: 131.044 };
+                this.map = new google.maps.Map(document.getElementById("map"), {
+                    zoom: 4,
+                    center: defLatLng,
+                });
+            },
+           
+
+
+        },
+        computed: {
+
+        },
+        mounted() {
+            window.initMap = this.initMap;
+            if (param != null)
+                this.getCitizenDetail();
+
+        },
+    });
+
+    </script>
+}
+
+

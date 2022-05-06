@@ -6,18 +6,25 @@ using System.Web.Mvc;
 
 namespace WEB.Controllers
 {
-    public class CitizenController : Controller
+    public class OfficerController : Controller
     {
-        // GET: Citizen
+        // GET: Officer
         public ActionResult Index()
         {
             return View();
         }
 
-        public ActionResult Qualification()
+        // GET: Officer/Details/5
+        public ActionResult CitizenDetails()
         {
             return View();
         }
-                
+
+        public ActionResult Citizens()
+        {
+            return View();
+        }
+
+
     }
 }

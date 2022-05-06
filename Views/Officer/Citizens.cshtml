@@ -1,0 +1,96 @@
+﻿
+@{
+    ViewBag.Title = "Citizens";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div id="divCitizens" class="justify-content-center" v-cloak>
+    <div class="jumbotron">
+        <div class="card-body ">
+            <form id="frmCitizens">
+                <h3>Citizen Details</h3>
+                <div class="form-row">
+                    <div class="card-body">
+                        <b-table striped hover :items="citizens" :fields="fields">
+                            <template #cell(Actions)="data">
+                                <button class="btn-outline-info" @@click="getCitizenDetails(data.item.NIC)" title="Show"><i class="far fa-trash-edit"></i></button>
+                            </template>
+                        </b-table>
+                    </div>
+                </div>
+              
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+
+    Vue.config.devtools = true;
+
+    if (vueCitizens != null) {
+        vueCitizens.$destroy();
+    }
+
+        var vueCitizens = new Vue({
+        el: '#divCitizens',
+        data: {
+            citizens: null,
+            fields: [
+                {
+                    key: 'NIC',
+                    label: 'NIC',
+                    sortable: true
+                },
+                {
+                    key: 'first_name',
+                    label: 'First Name',
+                    sortable: false
+                },
+                {
+                    key: 'profession',
+                    label: 'Profession',
+                    sortable: true,
+                },
+                {
+                    key: 'email',
+                    label: 'E-mail',
+                    sortable: true,
+                },
+                {
+                    key: 'reg_date',
+                    label: 'Registration Date',
+                    sortable: true,
+                },
+                {
+                    key: 'actions',
+                    label: 'Actions',
+                }
+            ],
+
+        },
+        methods: {
+            getCitizens() {
+                $.get('https://edu.santhawa.lk/apiv1/citizen', function (data, status, response) {
+                    vueCitizens.citizens = data;
+                })
+            },
+            getCitizenDetails(nic) {
+                window.open("https://localhost:44354/Officer/CitizenDetails?nic=" + nic , "_blank");
+            },
+
+
+        },
+        computed: {
+
+        },
+        mounted() {
+            this.getCitizens();
+            this.getCitizenDetails();
+
+        },
+    });
+
+    </script>
+}
+
