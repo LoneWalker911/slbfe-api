@@ -22,6 +22,7 @@ class CitizenCtrl
 
   /**
    * @url GET /citizen
+   * @noAuth
    */
 public function readAll()
 {
@@ -50,11 +51,11 @@ public function readAll()
         'last_name' => $last_name,
         'latitude' => $latitude,
         'longitude' => $longitude,
+        'dob' => $dob,
         'profession' => $profession,
         'affiliation' => $affiliation,
         'reg_date' => $reg_date,
-        'email' => $email,
-        'status' => $status
+        'email' => $email
       );
 
       // Push to "data"
@@ -97,9 +98,10 @@ public function readProfessions()
      //$citizens_arr['data'] = array();
     while($row = $result->fetch(PDO::FETCH_ASSOC)) {
       extract($row);
-      $professions[$ID] = $Profession;
+      array_push($professions,array('ID'=>$ID, 'Pro'=> $Profession)) ;
 
     }
+
 
     // Output
     return $professions;
@@ -115,67 +117,266 @@ public function readProfessions()
 
 /**
  * @url PUT /citizen/$id
-* @noAuth
+ *
  */
-public function citizen1($data)
+public function citizenQUpdate($id,$data)
 {
-  if($GLOBALS['user_details']['user_id'] == $id && $GLOBALS['user_details']['user_type'] == 1){}
-    else if($GLOBALS['user_details']['user_type'] == 2){}
-      else
-        throw new PowerfulAPIException(401,'');
-  echo "arg1 : ".$data->arg1;
+  // if($GLOBALS['user_details']['user_id'] == $id && $GLOBALS['user_details']['user_type'] == 1){}
+  //   else if($GLOBALS['user_details']['user_type'] == 2){}
+  //     else
+  //       throw new PowerfulAPIException(401,'');
+
+                $database = new Database();
+                $db = $database->connect();
+
+                $citizenQ = new CitizenQualification($db);
+
+                $citizenQ->id = Validate::input($id);
+
+
+                if(isset($data->qualifications) && !empty($data->qualifications))
+                  {
+                    $citizenQ->qualifications = Validate::input($data->qualifications);
+
+                    return $citizenQ->updateQ();
+                  }
+
 
 }
 
 /**
- * @url POST /citizen/$id
-* @noAuth
+ * @url GET /citizen/$id/qualifications
+ *
  */
-public function citizen1($data)
+public function citizenReadQ($id)
 {
-  echo "arg1 : ".$data->arg1;
+  // if($GLOBALS['user_details']['user_id'] == $id && $GLOBALS['user_details']['user_type'] == 1){}
+  //   else if($GLOBALS['user_details']['user_type'] == 2){}
+  //     else
+  //       throw new PowerfulAPIException(401,'');
+
+                $database = new Database();
+                $db = $database->connect();
+
+                $citizenQ = new CitizenQualification($db);
+
+                $citizenQ->id = Validate::input($id);
+
+                return  $citizenQ->readQ();
 
 }
+
+  /**
+   * @url POST /citizen/$id
+   * @noAuth
+   */
+    public function citizenQUpload($id,$data)
+    {
+        // if($GLOBALS['user_details']['user_id'] == $id && $GLOBALS['user_details']['user_type'] == 1){}
+        //   else if($GLOBALS['user_details']['user_type'] == 2){}
+        //     else
+        //       throw new PowerfulAPIException(401,'');
+
+              $database = new Database();
+              $db = $database->connect();
+
+              $citizenQ = new CitizenQualification($db);
+
+              $citizenQ->id = Validate::input($id);
+
+
+              return $citizenQ->uploadQ();
+    }
+
+
 
 /**
- * @url GET /citizen/$id
+ * @url DELETE /citizen/$id
+ * @noAuth
  */
-public function readSingle($id)
-{
-$database = new Database();
-$db = $database->connect();
+    public function citizenDelete($id)
+    {
+        // if($GLOBALS['user_details']['user_id'] == $id && $GLOBALS['user_details']['user_type'] == 1){}
+        //   else if($GLOBALS['user_details']['user_type'] == 2){}
+        //     else
+        //       throw new PowerfulAPIException(401,'');
 
-$citizen = new Citizen($db);
+              $database = new Database();
+              $db = $database->connect();
 
-// Get ID
-$citizen->id = $id;
+              $citizen = new Citizen($db);
 
-// Get post
-$citizen->read_single();
+              $citizen->id = Validate::input($id);
 
-// Create array
-$citizen_arr = array(
-  'id' => $citizen->id,
-  'NIC' => $citizen->NIC,
-  'first_name' => $citizen->first_name,
-  'last_name' => $citizen->last_name,
-  'latitude' => $citizen->lat,
-  'longitude' => $citizen->long,
-  'profession' => $citizen->profession,
-  'affiliation' => $citizen->affiliation,
-  'reg_date' => $citizen->reg_date,
-  'email' => $citizen->email,
-  'status' => $citizen->status
-);
+              return $citizen->delete();
+    }
 
-// Output
-return $citizen_arr;
-}
+/**
+ * @url GET /citizen/$id/contacts
+ *
+ */
+  public function citizenContacts($id)
+  {
+      // if($GLOBALS['user_details']['user_id'] == $id && $GLOBALS['user_details']['user_type'] == 1){}
+      //   else if($GLOBALS['user_details']['user_type'] == 2){}
+      //     else
+      //       throw new PowerfulAPIException(401,'');
+
+            $database = new Database();
+            $db = $database->connect();
+
+            $citizen = new Citizen($db);
+
+            $citizen->id = Validate::input($id);
+
+            return $citizen->getContacts();
+    }
+
+
+/**
+ * @url GET /citizen/find
+ *
+ */
+  public function citizenQSearch()
+  {
+      // if($GLOBALS['user_details']['user_id'] == $id && $GLOBALS['user_details']['user_type'] == 1){}
+      //   else if($GLOBALS['user_details']['user_type'] == 2){}
+      //     else
+      //       throw new PowerfulAPIException(401,'');
+
+            $database = new Database();
+            $db = $database->connect();
+
+            $citizenQ = new CitizenQualification($db);
+
+            $citizenQ->qualifications = Validate::input($_REQUEST['q']);
+
+            $result = $citizenQ->search();;
+             // Get row count
+            $num = $result->rowCount();
+
+            // Check if any citizen
+            if($num > 0) {
+              // Citizen array
+              $citizens_arr = array();
+               //$citizens_arr['data'] = array();
+
+              while($row = $result->fetch(PDO::FETCH_ASSOC)) {
+                extract($row);
+
+                $citizen_item = array(
+                  'id' => $id,
+                  'NIC' => $NIC,
+                  'first_name' => $first_name,
+                  'last_name' => $last_name,
+                  'latitude' => $latitude,
+                  'longitude' => $longitude,
+                  'profession' => $profession,
+                  'affiliation' => $affiliation,
+                  'reg_date' => $reg_date,
+                  'email' => $email
+                );
+
+                // Push to "data"
+                array_push($citizens_arr, $citizen_item);
+
+              }
+
+              // Output
+              return ($citizens_arr);
+
+            } else {
+              // No Posts
+                throw new PowerfulAPIException(404, "No Citizens Found");
+            }
+
+
+    }
+
+
+
+
+
+/**
+ * @url GET /citizen/$nic
+ */
+  public function readSingle($nic)
+  {
+    $database = new Database();
+    $db = $database->connect();
+
+    $citizen = new Citizen($db);
+
+    // Get ID
+    $citizen->NIC = $nic;
+
+    // Get post
+    $citizen->read_single();
+
+    if(!$citizen->read_single())
+      throw new PowerfulAPIException(404,'');
+
+
+    // Create array
+    $citizen_arr = array(
+      'id' => $citizen->id,
+      'NIC' => $citizen->NIC,
+      'first_name' => $citizen->first_name,
+      'last_name' => $citizen->last_name,
+      'latitude' => $citizen->lat,
+      'longitude' => $citizen->long,
+      'profession' => $citizen->profession,
+      'affiliation' => $citizen->affiliation,
+      'ContactName1' => $citizen->ContactName1,
+      'Contact1' => $citizen->Contact1,
+      'ContactName2' => $citizen->ContactName2,
+      'Contact2' => $citizen->Contact2,
+      'dob' => $citizen->dob,
+      'reg_date' => $citizen->reg_date,
+      'email' => $citizen->email
+    );
+
+    // Output
+    return $citizen_arr;
+  }
+
+
+  /**
+   * @url PUT /citizen/$id/validate
+   *
+   */
+  public function citizenQValidate($id,$data)
+  {
+    // if($GLOBALS['user_details']['user_id'] == $id && $GLOBALS['user_details']['user_type'] == 1){}
+    //   else if($GLOBALS['user_details']['user_type'] == 2){}
+    //     else
+    //       throw new PowerfulAPIException(401,'');
+
+          $database = new Database();
+          $db = $database->connect();
+
+          $citizenQ = new CitizenQualification($db);
+
+          $citizenQ->id = Validate::input($id);
+
+
+          if(isset($data->validation) && ($data->validation == 0 || $data->validation == 1))
+            {
+              $citizenQ->validation = Validate::input($data->validation);
+
+              return $citizenQ->validateQ();
+            }
+            else
+              throw new PowerfulAPIException(400,'');
+
+
+  }
 
 
 
   /**
    * @url POST /citizen
+   * @noAuth
    */
  public function citizenCreate()
 {
@@ -222,8 +423,7 @@ return $citizen_arr;
 
   if(isset($_POST['affiliation']))
     $citizen->affiliation = empty($_POST['affiliation']) ? NULL : Validate::input($_POST['affiliation']);
-  else
-    throw new PowerfulAPIException(400,'');
+
 
   if(isset($_POST['Contact1']))
     $citizen->Contact1 = Validate::input($_POST['Contact1']);
@@ -237,13 +437,11 @@ return $citizen_arr;
 
   if(isset($_POST['Contact2']))
     $citizen->Contact2 = empty($_POST['Contact2']) ? NULL : Validate::input($_POST['Contact2']);
-  else
-    throw new PowerfulAPIException(400,'');
+
 
   if(isset($_POST['ContactName2']))
     $citizen->ContactName2 = empty($_POST['ContactName2']) ? NULL : Validate::input($_POST['ContactName2']);
-  else
-    throw new PowerfulAPIException(400,'');
+
 
   if(isset($_POST['email']))
     $citizen->email = Validate::input($_POST['email']);
@@ -263,94 +461,7 @@ return $citizen_arr;
 }
 
 
-  /**
-   * @url PUT /citizen1/$id
-   */
- public function citizenUpload($id)
-{
 
-
-
-  $database = new Database();
-  $db = $database->connect();
-
-  $citizen = new Citizen($db);
-
-  // Get Data
-  if(isset($_POST['qulification']) && !empty($_POST['qulification']))
-    $citizen->NIC = Validate::input($_POST['qulification']);
-
-  if(isset($_PUT['cv']) && !empty($_PUT['cv']))
-    $citizen->first_name = Validate::input($_POST['first_name']);
-  else
-    throw new PowerfulAPIException(400,'');
-
-  if(isset($_POST['last_name']))
-    $citizen->last_name = Validate::input($_POST['last_name']);
-  else
-    throw new PowerfulAPIException(400,'');
-
-  if(isset($_POST['latitude']))
-    $citizen->lat = Validate::input($_POST['latitude']);
-  else
-    throw new PowerfulAPIException(400,'');
-
-  if(isset($_POST['longitude']))
-    $citizen->long = Validate::input($_POST['longitude']);
-  else
-    throw new PowerfulAPIException(400,'');
-
-  if(isset($_POST['dob']))
-    $citizen->dob = Validate::input($_POST['dob']);
-  else
-    throw new PowerfulAPIException(400,'');
-
-  if(isset($_POST['profession']))
-    $citizen->profession = Validate::input($_POST['profession']);
-  else
-    throw new PowerfulAPIException(400,'');
-
-  if(isset($_POST['affiliation']))
-    $citizen->affiliation = empty($_POST['affiliation']) ? NULL : Validate::input($_POST['affiliation']);
-  else
-    throw new PowerfulAPIException(400,'');
-
-  if(isset($_POST['Contact1']))
-    $citizen->Contact1 = Validate::input($_POST['Contact1']);
-  else
-    throw new PowerfulAPIException(400,'');
-
-  if(isset($_POST['ContactName1']))
-    $citizen->ContactName1 = Validate::input($_POST['ContactName1']);
-  else
-    throw new PowerfulAPIException(400,'');
-
-  if(isset($_POST['Contact2']))
-    $citizen->Contact2 = empty($_POST['Contact2']) ? NULL : Validate::input($_POST['Contact2']);
-  else
-    throw new PowerfulAPIException(400,'');
-
-  if(isset($_POST['ContactName2']))
-    $citizen->ContactName2 = empty($_POST['ContactName2']) ? NULL : Validate::input($_POST['ContactName2']);
-  else
-    throw new PowerfulAPIException(400,'');
-
-  if(isset($_POST['email']))
-    $citizen->email = Validate::input($_POST['email']);
-  else
-    throw new PowerfulAPIException(400,'');
-
-  if(isset($_POST['password']))
-    $citizen->password = Validate::input($_POST['password']);
-  else
-    throw new PowerfulAPIException(400,'');
-
-
-
-  // Create Citizen and login user acc
-  return $citizen->create();
-
-}
 
 
 

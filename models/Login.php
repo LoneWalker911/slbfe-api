@@ -61,7 +61,6 @@
       $stmt->bindParam(1, $this->username);
       $stmt->bindParam(2, $this->password);
 
-      //echo $this->password;
 
       // Execute query
       $stmt->execute();
@@ -154,10 +153,7 @@
 
           if(!$this->isUsernameNew())
             throw new PowerfulAPIException(409, "Username already exists");
-            echo "Login UN: ".$this->username."\n";
-            echo "Login PW: ".$this->password."\n";
           $this->password = md5($this->username.$this->password);
-          echo "Login MD5: ".$this->password."\n";
 
 
           // Create query

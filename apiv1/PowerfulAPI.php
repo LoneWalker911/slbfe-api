@@ -307,7 +307,7 @@ class PowerfulAPI
 
 	public function getFormat()
 	{
-		$format = OutFormats::PLAIN;
+		$format = OutFormats::JSON;
 		$accept_mod = preg_replace('/\s+/i', '', $_SERVER['HTTP_ACCEPT']); // ensures that exploding the HTTP_ACCEPT string does not get confused by whitespaces
 		$accept = explode(',', $accept_mod);
 		$override = '';

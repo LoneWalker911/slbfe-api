@@ -5,6 +5,10 @@
     private $db_name = 'slbfe-api';
     private $username = 'root';
     private $password = '';
+    // private $host = 'santhawa.lk';
+    // private $db_name = 'santhawa_api';
+    // private $username = 'santhawa_api';
+    // private $password = '!?pIN{pvn!*x';
     private $conn;
 
     // DB Connect

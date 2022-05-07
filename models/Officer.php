@@ -3,10 +3,10 @@
 include_once 'Validate.php';
 include_once 'Login.php';
 
-  class Citizen {
+  class Officer {
     // DB stuff
     private $conn;
-    private $table = 'citizen';
+    private $table = 'officer';
 
     // Citizen Properties
     public $id;
@@ -14,15 +14,8 @@ include_once 'Login.php';
     public $first_name;
     public $last_name;
     public $dob;
-    public $lat;
-    public $long;
-    public $profession;
     public $email;
-    public $affiliation;
-    public $ContactName1;
-    public $ContactName2;
-    public $Contact1;
-    public $Contact2;
+    public $status;
     public $reg_date;
     public $password;
 
@@ -49,40 +42,35 @@ include_once 'Login.php';
     // Get Single Citizen
     public function read_single() {
           // Create query
-          $query = 'SELECT citizen.*,profession.Profession AS Prop FROM ' . $this->table . ',profession WHERE citizen.NIC=? AND profession.ID = citizen.profession';
+          $query = 'SELECT * FROM ' . $this->table . ' WHERE id=?';
 
           // Prepare statement
           $stmt = $this->conn->prepare($query);
 
           // Bind ID
-          $stmt->bindParam(1, $this->NIC);
+          $stmt->bindParam(1, $this->id);
 
           // Execute query
           $stmt->execute();
 
-          if($stmt->rowCount()!=1)
-            return false;
-
           $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
           // Set properties
-          $this->id = $row['id'];
           $this->NIC = $row['NIC'];
           $this->first_name = $row['first_name'];
           $this->last_name = $row['last_name'];
           $this->dob = $row['dob'];
           $this->lat = $row['latitude'];
           $this->long = $row['longitude'];
-          $this->profession = $row['Prop'];
+          $this->profession = $row['profession'];
           $this->email = $row['email'];
           $this->affiliation = $row['affiliation'];
           $this->ContactName1 = $row['ContactName1'];
           $this->ContactName2 = $row['ContactName2'];
           $this->Contact1 = $row['Contact1'];
           $this->Contact2 = $row['Contact2'];
+          $this->status = $row['status'];
           $this->reg_date = $row['reg_date'];
-
-          return true;
     }
 
     public function isidValid() {
@@ -147,37 +135,12 @@ include_once 'Login.php';
           if(!Validate::Date($this->dob))
             throw new PowerfulAPIException(422,"Date of Birth Invalid");
 
-          if(!Validate::Latitude($this->lat))
-            throw new PowerfulAPIException(422,"Latitude Invalid");
-
-          if(!Validate::Longitude($this->long))
-            throw new PowerfulAPIException(422,"Logitude Invalid");
-
           if(!Validate::Email($this->email))
             throw new PowerfulAPIException(422,"Email Invalid");
 
-          if(!Validate::Profession($this->profession))
-            throw new PowerfulAPIException(422,"Profession Invalid");
-
-          if(!Validate::Name($this->affiliation) && $this->affiliation!=null)
-            throw new PowerfulAPIException(422,"Affiliation Invalid");
-
-          if(!Validate::Name($this->ContactName1))
-            throw new PowerfulAPIException(422,"ContactName1 Invalid");
-
-          if(!Validate::Mobile($this->Contact1))
-            throw new PowerfulAPIException(422,"Contact1 Invalid");
-
-          if(!Validate::Name($this->ContactName2) && $this->ContactName2!=null)
-            throw new PowerfulAPIException(422,"ContactName2 Invalid");
-
-          if(!Validate::Mobile($this->Contact2) && $this->Contact2!=null)
-            throw new PowerfulAPIException(422,"Contact2 Invalid");
-
-
 
           // Create query
-          $query = 'INSERT INTO ' . $this->table . ' SET NIC = :NIC, first_name = :first_name, last_name = :last_name, dob = :dob, latitude = :latitude, longitude = :longitude, profession = :profession, email = :email, affiliation = :affiliation, Contact1 = :Contact1, Contact2 = :Contact2, ContactName1 = :ContactName1, ContactName2 = :ContactName2';
+          $query = 'INSERT INTO ' . $this->table . ' SET NIC = :NIC, first_name = :first_name, last_name = :last_name, dob = :dob, email = :email';
 
           // Prepare statement
           $stmt = $this->conn->prepare($query);
@@ -188,23 +151,15 @@ include_once 'Login.php';
           $stmt->bindParam(':first_name', $this->first_name);
           $stmt->bindParam(':last_name', $this->last_name);
           $stmt->bindParam(':dob', $this->dob);
-          $stmt->bindParam(':latitude', $this->lat);
-          $stmt->bindParam(':longitude', $this->long);
-          $stmt->bindParam(':profession', $this->profession);
           $stmt->bindParam(':email', $this->email);
-          $stmt->bindParam(':affiliation', $this->affiliation);
-          $stmt->bindParam(':Contact1', $this->Contact1);
-          $stmt->bindParam(':Contact2', $this->Contact2);
-          $stmt->bindParam(':ContactName1', $this->ContactName1);
-          $stmt->bindParam(':ContactName2', $this->ContactName2);
 
 
           // Execute query
           if($stmt->execute()) {
              $login = new Login($this->conn);
              $login->user_id = $this->conn->lastInsertId();
-             $login->username = $this->NIC;
-             $login->user_type = 1;
+             $login->username = $this->email;
+             $login->user_type = 2;
 
              $login->password = $this->password;
 
@@ -214,7 +169,7 @@ include_once 'Login.php';
                   }
                 else
                 {
-                  return array('status' => 1, 'message' => 'Citizen Created. User Acc Failed.');
+                  return array('status' => 1, 'message' => 'Officer Created. User Acc Failed.');
                 }
             }
             else
