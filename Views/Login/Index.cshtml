@@ -8,27 +8,26 @@
         <div class="container">
             <div class="row no-gutters">
                 <div class="col-lg-5">
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiB9t90MaeaSUiDNWPfZzBR_irRsV0GgCXGA&usqp=CAU"
+                    <img src="https://yt3.ggpht.com/ytc/AKedOLSFn_76oHyXOB5jPaUaFeuIWR_FckFt3-M4D3Sh=s900-c-k-c0x00ffffff-no-rj"
                          class="img-fluid"
                          alt="" />
                 </div>
                 <div class="col-lg-7 px-5 pt-5">
-                    <h1 class="font-weight-bold py-3">CDC</h1>
+                    <h1 class="font-weight-bold py-3">SLBFE PORTAL</h1>
                     <h4>Sign in to your account</h4>
                     <form name="loginForm" onsubmit="return login()">
                         <div class="form-row">
                             <div class="col-lg-7">
-                                <input type="email"
+                                <input type="text"
                                        placeholder="Enter Username"
                                        class="form-control my-3 p-2"
-                                       id="email"
                                        v-model="editLogin.username" />
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="col-lg-7">
                                 <input type="password"
-                                       placeholder="Enter password"
+                                       placeholder="Enter Password"
                                        class="form-control my-3 p-2"
                                        id="pass"
                                        v-model="editLogin.password" />
@@ -36,12 +35,11 @@
                         </div>
                         <div class="form-row">
                             <div class="col-lg-7">
-                                <button type="button" @@click="login" class="btn1 mt-3 mb-5">Login</button>
+                                <button type="button" @@click="validate" class="btn1 mt-3 mb-5">Login</button>
                             </div>
                         </div>
-                        <a href="forgotPassword.html">Forgot Password</a>
                         <p>
-                            Don't have an account? <a href="register.html">Register here</a>
+                            Don't have an account? <a href="/Citizen">Register here</a>
                         </p>
                     </form>
                 </div>
@@ -60,22 +58,58 @@
         }
 
         var vueLogins = new Vue({
-            el: '#divCitizens',
+            el: '#divLogin',
             data: {
-                editLogin: {},
+                editLogin: { username: '999485356335', password: 'admin1234' },
+                cred: {},
 
 
 
             },
             methods: {
                 login() {
-                    $.post('http://localhost/slbfe-api/apiv1/login', vueCitizens.editLogin, function (response) {
+                    $.post('https://edu.santhawa.lk/apiv1/login', vueLogins.editLogin, function (response) {
                         alert("success");
+                        vueLogins.cred = response;
+                        setCookie('token', vueLogins.cred.token, 1);
+                        vueLogins.validate();
+                        switch (vueLogins.cred.userType) {
+                            case '1': window.location.href("/Citizen/Home"); break;//Citizen
+                            case '2': window.location.href("https://facebook.com"); break;//Officer
+                            case '3': window.location.href("https://facebook.com"); break;//Agent
+                        }
+
                     })
                         .fail(function (response) { alert('Error' + response.responseText) });
+
                 },
-
-
+                validate() {
+                    debugger;
+                    //$.ajax({
+                    //    url: 'https://edu.santhawa.lk/apiv1/login/check',
+                    //    type: 'GET',
+                    //    headers: {
+                    //        'Authorization': '1234',
+                    //    },
+                    //    success: function (data) {
+                    //        console.info(data);
+                    //    }
+                    //});
+                    //$.ajax({
+                    //    url: 'https://edu.santhawa.lk/apiv1/login/check',
+                    //    headers: { "Authorization": vueLogins.cred.token },
+                    //    success: function (data) {
+                    //        console.info(data);
+                    //    }
+                    //});
+                    $.ajax({
+                        url: "https://edu.santhawa.lk/apiv1/login/check",
+                        data: {},
+                        type: "GET",
+                        beforeSend: function (xhr) { xhr.setRequestHeader('Authorization', 'test-value'); },
+                        success: function () { alert('Success!'); }
+                    });
+                },
             },
             computed: {
             },
@@ -83,8 +117,13 @@
 
             },
         });
+        $.ajax({
+            url: "https://edu.santhawa.lk/apiv1/login/check",
+            data: {},
+            type: "GET",
+            beforeSend: function (xhr) { xhr.setRequestHeader('Authorization', 'test-value'); },
+            success: function () { alert('Success!'); }
+        });
     </script>
 }
-
-
 

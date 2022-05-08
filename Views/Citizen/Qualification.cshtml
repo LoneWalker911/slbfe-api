@@ -1,23 +1,28 @@
 ﻿
 @{
     ViewBag.Title = "Qualification";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_CitizenLayout.cshtml";
 }
 
 <div id="divCitizenQualifications" align="center">
     <form method="post" action="" enctype="multipart/form-data"
           id="myform">
-
-        <div>
+        <div class="jumbotron">
+            <div class="form-group col-6">
+                <div class="form-field mb-2">
+                    <label class="form-label">Upload Your Qulification</label>
+                    <textarea id="txtQualification" name="txtQualification" class="form-control text-area" placeholder="Type Your Qualification Here !!!!" v-model="qualifications.qualifications" rows="3"></textarea>
+                </div>
+            </div>
             <input type="file" id="cv" name="cv" />
             <input type="file" id="birthcert" name="birthcert" />
             <input type="file" id="passport" name="passport" />
-            <button type="button" class="button" value="Upload" @@click="update"
+            <button type="button" class="btn btn-primary btn-sm" value="Upload" @@click="update"
                     id="butn_upload">
-                Test
+                Upload
             </button>
         </div>
-       
+
     </form>
 </div>
 
@@ -34,7 +39,7 @@
     var vueCitizenQualifications = new Vue({
         el: '#divCitizenQualifications',
         data: {
-            qualifications: {qualifications:"JKJKJKJ"},
+            qualifications: {},
 
 
         },

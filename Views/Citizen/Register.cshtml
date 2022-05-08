@@ -1,5 +1,7 @@
-﻿@{
-    ViewBag.Title = "Home Page";
+﻿
+@{
+    ViewBag.Title = "Register";
+    Layout = "~/Views/Shared/_CitizenLayout.cshtml";
 }
 <div id="divCitizens" class="justify-content-center" v-cloak>
     <div class="jumbotron">
@@ -133,84 +135,85 @@
 @section Scripts {
 
     <script>
-    Vue.config.devtools = true;
+        Vue.config.devtools = true;
 
-    if (vueCitizens != null) {
-        vueCitizens.$destroy();
-    }
-    Vue.component("v-select", VueSelect.VueSelect);
+        if (vueCitizens != null) {
+            vueCitizens.$destroy();
+        }
+        Vue.component("v-select", VueSelect.VueSelect);
 
-    var vueCitizens = new Vue({
-        el: '#divCitizens',
-        data: {
-            editCitizen: {},
-            professions: [],
-            professionId: null,
-            location: {},
+        var vueCitizens = new Vue({
+            el: '#divCitizens',
+            data: {
+                editCitizen: {},
+                professions: [],
+                professionId: null,
+                location: {},
 
 
 
-        },
-        methods: {
-            addCitizen() {
-                $.post('https://edu.santhawa.lk/apiv1/citizen', vueCitizens.editCitizen, function (response) {
-                    alert("success");
-                })
-                    .fail(function (response) { alert('Error' + response.responseText) });
             },
-            getProfessions() {
-                $.get('https://edu.santhawa.lk/apiv1/citizen/professions?format=json', function (data, status, response) {
-                    vueCitizens.professions = data;
-                })
-            },
-            initMap() {
-                const myLatlng = { lat: -25.363, lng: 131.044 };
-                const map = new google.maps.Map(document.getElementById("map"), {
-                    zoom: 4,
-                    center: myLatlng,
-                });
-                // Create the initial InfoWindow.
-                let infoWindow = new google.maps.InfoWindow({
-                    content: "Click the map to get Lat/Lng!",
-                    position: myLatlng,
-                });
-
-                infoWindow.open(map);
-                // Configure the click listener.
-                map.addListener("click", (mapsMouseEvent) => {
-
-                    this.location = mapsMouseEvent.latLng.toJSON();
-                    vueCitizens.editCitizen.latitude = this.location.lat.toFixed(6);
-                    vueCitizens.editCitizen.longitude = this.location.lng.toFixed(6);
-                    // Close the current InfoWindow.
-                    infoWindow.close();
-                    // Create a new InfoWindow.
-                    infoWindow = new google.maps.InfoWindow({
-                        position: mapsMouseEvent.latLng,
+            methods: {
+                addCitizen() {
+                    $.post('https://edu.santhawa.lk/apiv1/citizen', vueCitizens.editCitizen, function (response) {
+                        alert("success");
+                    })
+                        .fail(function (response) { alert('Error' + response.responseText) });
+                },
+                getProfessions() {
+                    $.get('https://edu.santhawa.lk/apiv1/citizen/professions?format=json', function (data, status, response) {
+                        vueCitizens.professions = data;
+                    })
+                },
+                initMap() {
+                    const myLatlng = { lat: -25.363, lng: 131.044 };
+                    const map = new google.maps.Map(document.getElementById("map"), {
+                        zoom: 4,
+                        center: myLatlng,
                     });
-                    infoWindow.setContent(
-                        JSON.stringify(mapsMouseEvent.latLng.toJSON(), null, 2)
-                    );
+                    // Create the initial InfoWindow.
+                    let infoWindow = new google.maps.InfoWindow({
+                        content: "Click the map to get Lat/Lng!",
+                        position: myLatlng,
+                    });
+
                     infoWindow.open(map);
+                    // Configure the click listener.
+                    map.addListener("click", (mapsMouseEvent) => {
 
-                });
+                        this.location = mapsMouseEvent.latLng.toJSON();
+                        vueCitizens.editCitizen.latitude = this.location.lat.toFixed(6);
+                        vueCitizens.editCitizen.longitude = this.location.lng.toFixed(6);
+                        // Close the current InfoWindow.
+                        infoWindow.close();
+                        // Create a new InfoWindow.
+                        infoWindow = new google.maps.InfoWindow({
+                            position: mapsMouseEvent.latLng,
+                        });
+                        infoWindow.setContent(
+                            JSON.stringify(mapsMouseEvent.latLng.toJSON(), null, 2)
+                        );
+                        infoWindow.open(map);
+
+                    });
+                },
+
+
             },
+            computed: {
+            },
+            mounted() {
+                this.getProfessions();
+                window.initMap = this.initMap;
 
-
-        },
-        computed: {
-        },
-        mounted() {
-            this.getProfessions();
-            window.initMap = this.initMap;
-
-        },
-    });
-    $(function () {
-        jQuery('.datepicker-input').datetimepicker({
-            timepicker: false,
-            format: 'd/m/Y'
+            },
         });
-    });
+        $(function () {
+            jQuery('.datepicker-input').datetimepicker({
+                timepicker: false,
+                format: 'd/m/Y'
+            });
+        });
     </script>
 }
+

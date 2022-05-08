@@ -121,6 +121,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\CitizenController.cs" />
+    <Compile Include="Controllers\CompanyController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\OfficerController.cs" />
@@ -169,7 +170,7 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Citizen\Index.cshtml" />
+    <Content Include="Views\Citizen\Register.cshtml" />
     <Content Include="Views\Home\Test.cshtml" />
     <Content Include="Views\Home\Map.cshtml" />
     <Content Include="Views\Login\Login.cshtml" />
@@ -178,6 +179,12 @@
     <Content Include="Views\Citizen\Qualification.cshtml" />
     <Content Include="Views\Officer\CitizenDetails.cshtml" />
     <Content Include="Views\Officer\Citizens.cshtml" />
+    <Content Include="Views\Company\SearchQualification.cshtml" />
+    <Content Include="Views\Company\QualificationDetail.cshtml" />
+    <Content Include="Views\Shared\_CitizenLayout.cshtml" />
+    <Content Include="Views\Citizen\Home.cshtml" />
+    <Content Include="Views\Shared\_OfficerLayout.cshtml" />
+    <Content Include="Views\Shared\_CompanyLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

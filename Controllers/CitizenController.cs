@@ -18,6 +18,20 @@ namespace WEB.Controllers
         {
             return View();
         }
-                
+
+        public ActionResult UpdateLocation()
+        {
+            return View();
+        }
+
+        public ActionResult Home()
+        {
+            return View();
+        }
+
+        public ActionResult Register()
+        {
+            return View();
+        }
     }
 }

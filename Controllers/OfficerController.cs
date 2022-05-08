@@ -25,6 +25,11 @@ namespace WEB.Controllers
             return View();
         }
 
+        public ActionResult CompanyCreate()
+        {
+            return View();
+        }
+
 
     }
 }

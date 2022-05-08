@@ -1,7 +1,7 @@
 ﻿
 @{
-    ViewBag.Title = "CitizenDetails";
-    Layout = "~/Views/Shared/_OfficerLayout.cshtml";
+    ViewBag.Title = "QualificationDetail";
+    Layout = "~/Views/Shared/_CompanyLayout.cshtml";
 }
 <div id="divCitizenDetails" class="justify-content-center" v-cloak>
     <div class="jumbotron">
@@ -122,12 +122,7 @@
                     <div class="form-row">
                         <div class="col-6 float-start px-0 px-md-1">
                             <div class="form-field mb-2">
-                                <button type="button" @@click="rejectQualification" class="col-12 btn-danger btn-lg">Reject</button>
-                            </div>
-                        </div>
-                        <div class="col-6 float-start px-0 px-md-1">
-                            <div class="form-field mb-2">
-                                <button type="button" @@click="validateQualification" class="col-12 btn btn-primary btn-lg">Validate</button>
+                                <button type="button" @@click="selectCitizen" class="col-12 btn btn-primary">Select</button>
                             </div>
                         </div>
                     </div>
@@ -161,7 +156,7 @@
         el: '#divCitizenDetails',
         data: {
             editCitizenNic: { nic: param },
-            editCitizen: {Q: ''},
+            editCitizen: { Q:''},
             map: null,
 
 
@@ -183,7 +178,7 @@
                         markers.push(marker);
                         marker.setMap(vueCitizenDetails.map);
                         vueCitizenDetails.map.panTo(myLatlng);
-                        
+
                     },
                 });
             },
@@ -194,51 +189,65 @@
                     center: defLatLng,
                 });
             },
-            validateQualification() {
-                var url = "https://edu.santhawa.lk/apiv1/citizen/" + this.editCitizen.id + "/validate";
-
-                var xhr = new XMLHttpRequest();
-                xhr.open("PUT", url);
-
-                xhr.setRequestHeader("Content-Type", "application/json");
-
-                xhr.setRequestHeader("Authorization", "KBL08wP3ClWhNsEJ2kWlCvN5H1wZjcCo");
-
-                xhr.onreadystatechange = function () {
-
-                    if (xhr.readyState === 4) {
-                        console.log(xhr.status);
-                        console.log(xhr.responseText);
+            selectCitizen() {
+                if (getCookie("selectIds") == null) {
+                    var arr = [parseInt(this.editCitizen.id)];
+                    setCookie('selectIds', JSON.stringify(arr));
+                }
+                else {
+                    var json_str = getCookie("selectIds");
+                    var arr = JSON.parse(json_str);
+                    if (arr.indexOf(parseInt(this.editCitizen.id)) == -1) {
+                        arr.push(parseInt(this.editCitizen.id));
+                        setCookie('selectIds', JSON.stringify(arr));
                     }
-                };
-
-                var data = '{"validation":"2"}';
-
-                xhr.send(data);
-            },
-            rejectQualification() {
-                var url = "https://edu.santhawa.lk/apiv1/citizen/" + this.editCitizen.id + "/validate";
-
-                var xhr = new XMLHttpRequest();
-                xhr.open("PUT", url);
-
-                xhr.setRequestHeader("Content-Type", "application/json");
-
-                xhr.setRequestHeader("Authorization", "KBL08wP3ClWhNsEJ2kWlCvN5H1wZjcCo");
-
-                xhr.onreadystatechange = function () {
-
-                    if (xhr.readyState === 4) {
-                        console.log(xhr.status);
-                        console.log(xhr.responseText);
-                    }
-                };
-
-                var data = '{"validation":"1"}';
-
-                xhr.send(data);
+                }
             }
-           
+            //validateQualification() {
+            //    var url = "https://edu.santhawa.lk/apiv1/citizen/" + this.editCitizen.id + "/validate";
+
+            //    var xhr = new XMLHttpRequest();
+            //    xhr.open("PUT", url);
+
+            //    xhr.setRequestHeader("Content-Type", "application/json");
+
+            //    xhr.setRequestHeader("Authorization", "KBL08wP3ClWhNsEJ2kWlCvN5H1wZjcCo");
+
+            //    xhr.onreadystatechange = function () {
+
+            //        if (xhr.readyState === 4) {
+            //            console.log(xhr.status);
+            //            console.log(xhr.responseText);
+            //        }
+            //    };
+
+            //    var data = '{"validation":"2"}';
+
+            //    xhr.send(data);
+            //},
+            //rejectQualification() {
+            //    var url = "https://edu.santhawa.lk/apiv1/citizen/" + this.editCitizen.id + "/validate";
+
+            //    var xhr = new XMLHttpRequest();
+            //    xhr.open("PUT", url);
+
+            //    xhr.setRequestHeader("Content-Type", "application/json");
+
+            //    xhr.setRequestHeader("Authorization", "KBL08wP3ClWhNsEJ2kWlCvN5H1wZjcCo");
+
+            //    xhr.onreadystatechange = function () {
+
+            //        if (xhr.readyState === 4) {
+            //            console.log(xhr.status);
+            //            console.log(xhr.responseText);
+            //        }
+            //    };
+
+            //    var data = '{"validation":"1"}';
+
+            //    xhr.send(data);
+            //}
+
 
 
         },
@@ -255,5 +264,7 @@
 
     </script>
 }
+
+
 
 
