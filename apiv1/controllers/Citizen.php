@@ -52,7 +52,7 @@ public function readAll()
         'latitude' => $latitude,
         'longitude' => $longitude,
         'dob' => $dob,
-        'profession' => $profession,
+        'profession' => $Prof,
         'affiliation' => $affiliation,
         'reg_date' => $reg_date,
         'email' => $email
@@ -119,7 +119,7 @@ public function readProfessions()
  * @url PUT /citizen/$id
  *
  */
-public function citizenQUpdate($id,$data)
+public function citizenUpdate($id,$data)
 {
   // if($GLOBALS['user_details']['user_id'] == $id && $GLOBALS['user_details']['user_type'] == 1){}
   //   else if($GLOBALS['user_details']['user_type'] == 2){}
@@ -129,17 +129,31 @@ public function citizenQUpdate($id,$data)
                 $database = new Database();
                 $db = $database->connect();
 
-                $citizenQ = new CitizenQualification($db);
-
-                $citizenQ->id = Validate::input($id);
-
 
                 if(isset($data->qualifications) && !empty($data->qualifications))
                   {
+                    $citizenQ = new CitizenQualification($db);
+
+                    $citizenQ->id = Validate::input($id);
+
                     $citizenQ->qualifications = Validate::input($data->qualifications);
 
                     return $citizenQ->updateQ();
                   }
+
+                  if(isset($data->latitude) && !empty($data->latitude) && isset($data->longitude) && !empty($data->longitude))
+                    {
+                      $citizen = new Citizen($db);
+
+                      $citizen->id = Validate::input($id);
+
+                      $citizen->longitude = Validate::input($data->longitude);
+                      $citizen->latitude = Validate::input($data->latitude);
+
+                      return $citizen->updateLocation();
+                    }
+
+
 
 
 }
@@ -295,8 +309,6 @@ public function citizenReadQ($id)
 
 
 
-
-
 /**
  * @url GET /citizen/$nic
  */
@@ -310,8 +322,7 @@ public function citizenReadQ($id)
     // Get ID
     $citizen->NIC = $nic;
 
-    // Get post
-    $citizen->read_single();
+
 
     if(!$citizen->read_single())
       throw new PowerfulAPIException(404,'');
@@ -333,12 +344,56 @@ public function citizenReadQ($id)
       'Contact2' => $citizen->Contact2,
       'dob' => $citizen->dob,
       'reg_date' => $citizen->reg_date,
-      'email' => $citizen->email
+      'email' => $citizen->email,
+      'Q'=>$citizen->Q
     );
 
     // Output
     return $citizen_arr;
   }
+
+
+  /**
+   * @url GET /citizen/id/$id
+   */
+    public function readSingleById($id)
+    {
+      $database = new Database();
+      $db = $database->connect();
+
+      $citizen = new Citizen($db);
+
+      // Get ID
+      $citizen->id = $id;
+
+
+      if(!$citizen->readSingleById())
+        throw new PowerfulAPIException(404,'');
+
+
+      // Create array
+      $citizen_arr = array(
+        'id' => $citizen->id,
+        'NIC' => $citizen->NIC,
+        'first_name' => $citizen->first_name,
+        'last_name' => $citizen->last_name,
+        'latitude' => $citizen->lat,
+        'longitude' => $citizen->long,
+        'profession' => $citizen->profession,
+        'affiliation' => $citizen->affiliation,
+        'ContactName1' => $citizen->ContactName1,
+        'Contact1' => $citizen->Contact1,
+        'ContactName2' => $citizen->ContactName2,
+        'Contact2' => $citizen->Contact2,
+        'dob' => $citizen->dob,
+        'reg_date' => $citizen->reg_date,
+        'email' => $citizen->email,
+        'Q'=>$citizen->Q
+      );
+
+      // Output
+      return $citizen_arr;
+    }
 
 
   /**
@@ -360,7 +415,7 @@ public function citizenReadQ($id)
           $citizenQ->id = Validate::input($id);
 
 
-          if(isset($data->validation) && ($data->validation == 0 || $data->validation == 1))
+          if(isset($data->validation) && ($data->validation == 2 || $data->validation == 1))
             {
               $citizenQ->validation = Validate::input($data->validation);
 

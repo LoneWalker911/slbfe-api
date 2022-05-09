@@ -113,7 +113,12 @@ include_once 'Citizen.php';
 
           // Execute query
         if($stmt->execute()){
+              if($this->validation==2)
               return array('status' => 1, 'message' => 'Qualification validated successfully.');
+
+              if($this->validation==1)
+              return array('status' => 1, 'message' => 'Qualification rejected successfully.');
+
           }
         else{
               return array('status' => 0, 'message' => 'Process has failed.');

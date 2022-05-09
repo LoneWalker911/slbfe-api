@@ -3,10 +3,10 @@
 include_once 'Validate.php';
 include_once 'Login.php';
 
-  class Officer {
+  class Agent {
     // DB stuff
     private $conn;
-    private $table = 'officer';
+    private $table = 'agent';
 
     // Citizen Properties
     public $id;
@@ -159,7 +159,7 @@ include_once 'Login.php';
              $login = new Login($this->conn);
              $login->user_id = $this->conn->lastInsertId();
              $login->username = $this->email;
-             $login->user_type = 2;
+             $login->user_type = 3;
 
              $login->password = $this->password;
 
@@ -169,7 +169,7 @@ include_once 'Login.php';
                   }
                 else
                 {
-                  return array('status' => 1, 'message' => 'Officer Created. User Acc Failed.');
+                  return array('status' => 1, 'message' => 'Agent Created. User Acc Failed.');
                 }
             }
             else

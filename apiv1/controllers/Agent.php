@@ -24,7 +24,7 @@ class AgentCtrl
 
 
   /**
-   * @url POST /officer
+   * @url POST /agent
    * @noAuth
    */
  public function officerCreate()
@@ -32,45 +32,45 @@ class AgentCtrl
   $database = new Database();
   $db = $database->connect();
 
-  $officer = new Officer($db);
+  $agent = new Agent($db);
 
   // Get Data
   if(isset($_POST['nic']))
-    $officer->NIC = Validate::input($_POST['nic']);
+    $agent->NIC = Validate::input($_POST['nic']);
   else
     throw new PowerfulAPIException(400,'');
 
   if(isset($_POST['first_name']))
-    $officer->first_name = Validate::input($_POST['first_name']);
+    $agent->first_name = Validate::input($_POST['first_name']);
   else
     throw new PowerfulAPIException(400,'');
 
   if(isset($_POST['last_name']))
-    $officer->last_name = Validate::input($_POST['last_name']);
+    $agent->last_name = Validate::input($_POST['last_name']);
   else
     throw new PowerfulAPIException(400,'');
 
 
   if(isset($_POST['dob']))
-    $officer->dob = Validate::input($_POST['dob']);
+    $agent->dob = Validate::input($_POST['dob']);
   else
     throw new PowerfulAPIException(400,'');
 
 
   if(isset($_POST['email']))
-    $officer->email = Validate::input($_POST['email']);
+    $agent->email = Validate::input($_POST['email']);
   else
     throw new PowerfulAPIException(400,'');
 
   if(isset($_POST['password']))
-    $officer->password = Validate::input($_POST['password']);
+    $agent->password = Validate::input($_POST['password']);
   else
     throw new PowerfulAPIException(400,'');
 
 
 
   // Create Citizen and login user acc
-  return $officer->create();
+  return $agent->create();
 
 }
 

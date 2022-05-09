@@ -5,7 +5,7 @@ include_once 'Validate.php';
   class Complaint {
     // DB stuff
     private $conn;
-    private $table = 'complaint';
+    private $table = 'complaints';
 
     // Citizen Properties
     public $id;
@@ -18,7 +18,6 @@ include_once 'Validate.php';
 
     // Constructor with DB
     public function __construct($db) {
-      parent::__construct($db);
       $this->conn = $db;
     }
 
@@ -26,16 +25,16 @@ include_once 'Validate.php';
 
     public function fileComplaint() {
 
-          $citizen = new Citizen();
+          $citizen = new Citizen($this->conn);
 
           $citizen->id = $this->citizen_id;
 
           if(!$citizen->isidValid())
-            throw new PowerfulAPIException(422,"Citizen ID Invalid");
+            throw new PowerfulAPIException(422,"Citizen ID Invalid - 3");
 
 
           // Create query
-          $query = 'INSERT INTO complaint
+          $query = 'INSERT INTO complaints
                       (citizen_id, complaint)
                     VALUES
                       (:citizen_id, :complaint)';
@@ -59,26 +58,188 @@ include_once 'Validate.php';
     }
 
 
-    public function validateQ() {
+    public function getComplaints() {
+
+          // Create query
+          $query = 'SELECT * FROM complaints ORDER BY added_at ASC';
+
+          // Prepare statement
+          $stmt = $this->conn->prepare($query);
+
+          // Execute query
+        if($stmt->execute()){
+
+          if($stmt->rowCount()>0){
+
+            $complaints_arr = [];
+
+            while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+              extract($row);
+
+              if($response_at==null)
+
+
+              $complaint = array(
+                'id' => $id,
+                'citizen_id' => $citizen_id,
+                'complaint' => $complaint,
+                'officer_id' => $officer_id,
+                'response' => $response,
+                'added_at' => $added_at,
+                'response_at' => $response_at
+              );
+
+              // Push to "data"
+              array_push($complaints_arr, $complaint);
+
+            }
+
+          return $complaints_arr;
+        }
+        else
+            throw new PowerfulAPIException(404, "No Citizens Found");
+    }
+        else{
+              return array('status' => 0, 'message' => 'Process has failed.');
+          }
+    }
+
+
+    public function getComplaintsById() {
+
+          // Create query
+          $query = 'SELECT * FROM complaints WHERE citizen_id=? ORDER BY added_at ASC';
+
+          // Prepare statement
+          $stmt = $this->conn->prepare($query);
+
+          $stmt->bindParam(1, $this->citizen_id);
+
+          // Execute query
+        if($stmt->execute()){
+
+          if($stmt->rowCount()>0){
+
+            $complaints_arr = [];
+
+            while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+              extract($row);
+
+              $complaint = array(
+                'id' => $id,
+                'citizen_id' => $citizen_id,
+                'complaint' => $complaint,
+                'officer_id' => $officer_id,
+                'response' => $response,
+                'added_at' => $added_at,
+                'response_at' => $response_at
+              );
+
+              // Push to "data"
+              array_push($complaints_arr, $complaint);
+
+            }
+
+          return $complaints_arr;
+        }
+        else
+            throw new PowerfulAPIException(404, "No Complaints Found");
+    }
+        else{
+              return array('status' => 0, 'message' => 'Process has failed.');
+          }
+    }
+
+
+    public function getComplaintsId() {
+
+          // Create query
+          $query = 'SELECT * FROM complaints WHERE id=? ORDER BY added_at ASC';
+
+          // Prepare statement
+          $stmt = $this->conn->prepare($query);
+
+          $stmt->bindParam(1, $this->id);
+
+          // Execute query
+        if($stmt->execute()){
+
+          if($stmt->rowCount()>0){
+
+            $complaints_arr = [];
+
+            while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+              extract($row);
+
+              $complaint = array(
+                'id' => $id,
+                'citizen_id' => $citizen_id,
+                'complaint' => $complaint,
+                'officer_id' => $officer_id,
+                'response' => $response,
+                'added_at' => $added_at,
+                'response_at' => $response_at
+              );
+
+              // Push to "data"
+              array_push($complaints_arr, $complaint);
+
+            }
+
+          return $complaints_arr;
+        }
+        else
+            throw new PowerfulAPIException(404, "No Complaints Found");
+    }
+        else{
+              return array('status' => 0, 'message' => 'Process has failed.');
+          }
+    }
+
+    public function isidValid() {
+          // Create query
+          $query = 'SELECT 1 FROM complaints WHERE id=? AND response_at IS NULL';
+
+          // Prepare statement
+          $stmt = $this->conn->prepare($query);
+
+          // Bind ID
+          $stmt->bindParam(1, $this->id);
+
+          // Execute query
+          $stmt->execute();
+
+          // Get row count
+          $num = $stmt->rowCount();
+
+          if($num > 0)
+            return 1;
+
+            return 0;
+    }
+
+
+    public function response() {
 
           if(!$this->isidValid())
-            throw new PowerfulAPIException(422,"Citizen ID Invalid");
+            throw new PowerfulAPIException(422,"Complaint ID Invalid / Already Responded123");
 
 
           // Create query
-          $query = 'UPDATE '.$this->table.' SET validation=:validation WHERE id=:id';
+          $query = 'UPDATE '.$this->table.' SET response=:response, officer_id=:officer_id, response_at=NOW() WHERE id=:id';
 
           // Prepare statement
           $stmt = $this->conn->prepare($query);
 
           // Bind data
           $stmt->bindParam(':id', $this->id);
-          $stmt->bindParam(':validation', $this->validation);
+          $stmt->bindParam(':response', $this->response);
+          $stmt->bindParam(':officer_id', $this->officer_id);
 
 
           // Execute query
         if($stmt->execute()){
-              return array('status' => 1, 'message' => 'Qualification validated successfully.');
+              return array('status' => 1, 'message' => 'Response recorded successfully.');
           }
         else{
               return array('status' => 0, 'message' => 'Process has failed.');
