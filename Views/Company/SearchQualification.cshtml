@@ -89,7 +89,6 @@
                     url: 'https://edu.santhawa.lk/apiv1/citizen/find?q=' + this.qualifications.text,
                     type: 'GET',
                     contentType: 'application/json',
-                    headers: { "Authorization": "KBL08wP3ClWhNsEJ2kWlCvN5H1wZjcCo" },
                     success: function (data, status, response) {
                         console.log(data);
                         vueSearchQualifications.details = JSON.parse(response.responseText);
@@ -99,12 +98,20 @@
             getCitizenDetails(nic) {
                 window.open("https://localhost:44354/Company/QualificationDetail?nic=" + nic);
             },
+            sendHeaders() {
+                $.ajaxSetup({
+                    headers: {
+                        'Authorization': getCookie('token')
+                    }
+                });
+            }
+
            
         },
         computed: {
         },
-        mounted() {
-
+            mounted() {
+                this.sendHeaders();
         },
     });
 

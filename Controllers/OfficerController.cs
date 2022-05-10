@@ -30,6 +30,15 @@ namespace WEB.Controllers
             return View();
         }
 
+        public ActionResult Complaint()
+        {
+            return View();
+        }
+
+        public ActionResult ResponseDetail()
+        {
+            return View();
+        }
 
     }
 }

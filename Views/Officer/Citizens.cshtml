@@ -89,22 +89,11 @@
                 window.open("https://localhost:44354/Officer/CitizenDetails?nic=" + nic);
             },
             CitizenDelete(id) {
-                //$.ajax({
-                //    url: 'https://edu.santhawa.lk/apiv1/citizen/' + id,
-                //    type: 'GET',
-                //    headers: { "Authorization": "giiaZEAeuMkBeQXzmdDjaFKTvd5uFSJj" },
-                //    success: function (response) {
-                //        console.log(response);
-                //    },
-                //});
-
                 var url = 'https://edu.santhawa.lk/apiv1/citizen/' + id;
 
                 var xhr = new XMLHttpRequest();
                 xhr.open("DELETE", url);
-
-
-                xhr.setRequestHeader("Authorization", "giiaZEAeuMkBeQXzmdDjaFKTvd5uFSJj");
+                                          
 
                 xhr.onreadystatechange = function () {
                     if (xhr.readyState === 4) {
@@ -114,17 +103,26 @@
                 };
                 xhr.send();
             },
+            sendHeaders() {
+                $.ajaxSetup({
+                    headers: {
+                        'Authorization': getCookie('token')
+                    }
+                });
+            }
+
 
 
         },
         computed: {
 
         },
-        mounted() {
-            this.getCitizens();
-           // this.getCitizenDetails();
+            mounted() {
+                this.sendHeaders();
+                 this.getCitizens();
+                 // this.getCitizenDetails();
 
-        },
+             },
     });
 
     </script>

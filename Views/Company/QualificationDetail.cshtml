@@ -168,7 +168,6 @@
                     url: 'https://edu.santhawa.lk/apiv1/citizen/' + String(this.editCitizenNic.nic),
                     type: 'GET',
                     contentType: 'application/json',
-                    headers: { "Authorization": "KBL08wP3ClWhNsEJ2kWlCvN5H1wZjcCo" },
                     success: function (data, status, response) {
                         console.log(data);
                         clearMarkers();
@@ -202,59 +201,21 @@
                         setCookie('selectIds', JSON.stringify(arr));
                     }
                 }
+            },
+            sendHeaders() {
+                $.ajaxSetup({
+                    headers: {
+                        'Authorization': getCookie('token')
+                    }
+                });
             }
-            //validateQualification() {
-            //    var url = "https://edu.santhawa.lk/apiv1/citizen/" + this.editCitizen.id + "/validate";
-
-            //    var xhr = new XMLHttpRequest();
-            //    xhr.open("PUT", url);
-
-            //    xhr.setRequestHeader("Content-Type", "application/json");
-
-            //    xhr.setRequestHeader("Authorization", "KBL08wP3ClWhNsEJ2kWlCvN5H1wZjcCo");
-
-            //    xhr.onreadystatechange = function () {
-
-            //        if (xhr.readyState === 4) {
-            //            console.log(xhr.status);
-            //            console.log(xhr.responseText);
-            //        }
-            //    };
-
-            //    var data = '{"validation":"2"}';
-
-            //    xhr.send(data);
-            //},
-            //rejectQualification() {
-            //    var url = "https://edu.santhawa.lk/apiv1/citizen/" + this.editCitizen.id + "/validate";
-
-            //    var xhr = new XMLHttpRequest();
-            //    xhr.open("PUT", url);
-
-            //    xhr.setRequestHeader("Content-Type", "application/json");
-
-            //    xhr.setRequestHeader("Authorization", "KBL08wP3ClWhNsEJ2kWlCvN5H1wZjcCo");
-
-            //    xhr.onreadystatechange = function () {
-
-            //        if (xhr.readyState === 4) {
-            //            console.log(xhr.status);
-            //            console.log(xhr.responseText);
-            //        }
-            //    };
-
-            //    var data = '{"validation":"1"}';
-
-            //    xhr.send(data);
-            //}
-
-
 
         },
         computed: {
 
         },
         mounted() {
+            this.sendHeaders();
             window.initMap = this.initMap;
             if (param != null)
                 this.getCitizenDetail();

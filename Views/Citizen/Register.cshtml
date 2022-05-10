@@ -197,12 +197,21 @@
 
                     });
                 },
+                sendHeaders() {
+                    $.ajaxSetup({
+                        headers: {
+                            'Authorization': getCookie('token')
+                        }
+                    });
+                }
+
 
 
             },
             computed: {
             },
             mounted() {
+                this.sendHeaders();
                 this.getProfessions();
                 window.initMap = this.initMap;
 

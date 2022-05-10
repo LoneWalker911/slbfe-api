@@ -52,7 +52,7 @@
 
                 xhr.setRequestHeader("Content-Type", "application/json");
 
-                xhr.setRequestHeader("Authorization" , "F5JXJ4j6qGx29JVMu6xrBBPubBoxHQDT");
+                xhr.setRequestHeader("Authorization", getCookie('token'));
 
                 xhr.onreadystatechange = function () {
                     if (xhr.readyState === 4) {
@@ -66,12 +66,20 @@
                 }`;
 
                 xhr.send(JSON.stringify(vueCitizenQualifications.qualifications));
+            },
+            sendHeaders() {
+                $.ajaxSetup({
+                    headers: {
+                        'Authorization': getCookie('token')
+                    }
+                });
             }
+
         },
         computed: {
         },
         mounted() {
-
+            this.sendHeaders();
         },
     });
         $(document).ready(function () {
@@ -101,28 +109,18 @@
                 });
             });
         });
-        //$(document).ready(function () {
-        //    $("#butn_upload").click(function () {
-               
-
-        //        $.ajax({
-        //            url: 'https://edu.santhawa.lk/apiv1/citizen/17',
-        //            headers: {'x-some-other-header': 'some value'},
-        //            type: 'PUT',
-        //            data: 'A/L',
-        //            contentType: false,
-        //            processData: false,
-        //            success: function (response) {
-        //                if (response != 0) {
-        //                    alert('file uploaded');
-        //                }
-        //                else {
-        //                    alert('file not uploaded');
-        //                }
-        //            },
-        //        });
-        //    });
-        //});
+        if (getCookie('token') != null) {
+            $.ajax({
+                url: "https://edu.santhawa.lk/apiv1/login/check",
+                type: "GET",
+                beforeSend: function (xhr) { xhr.setRequestHeader('Authorization', getCookie('token')); },
+                success: function () {  }
+            })
+                .fail(function (response) { eraseCookie("token"); window.location.href = "/Login"; });
+        }
+        else {
+            window.location.href = "/Login";
+        }
        
     </script>
 }

@@ -35,7 +35,7 @@
                         </div>
                         <div class="form-row">
                             <div class="col-lg-7">
-                                <button type="button" @@click="validate" class="btn1 mt-3 mb-5">Login</button>
+                                <button type="button" @@click="login" class="btn1 mt-3 mb-5">Login</button>
                             </div>
                         </div>
                         <p>
@@ -69,14 +69,17 @@
             methods: {
                 login() {
                     $.post('https://edu.santhawa.lk/apiv1/login', vueLogins.editLogin, function (response) {
-                        alert("success");
+                        //alert("success");
                         vueLogins.cred = response;
                         setCookie('token', vueLogins.cred.token, 1);
+                        setCookie('userId', vueLogins.cred.user_id, 1);
+                        setCookie('userType', vueLogins.cred.userType, 1);
+                      
                         vueLogins.validate();
                         switch (vueLogins.cred.userType) {
-                            case '1': window.location.href("/Citizen/Home"); break;//Citizen
-                            case '2': window.location.href("/Officer/Citizens"); break;//Officer
-                            case '3': window.location.href("/Comapny/SearchQualification"); break;//Agent
+                            case '1': window.location.href="/Citizen/Home"; break;//Citizen
+                            case '2': window.location.href="/Officer/Citizens"; break;//Officer
+                            case '3': window.location.href="/Comapny/SearchQualification"; break;//Agent
                         }
 
                     })
@@ -84,31 +87,18 @@
 
                 },
                 validate() {
-                    debugger;
-                    //$.ajax({
-                    //    url: 'https://edu.santhawa.lk/apiv1/login/check',
-                    //    type: 'GET',
-                    //    headers: {
-                    //        'Authorization': '1234',
-                    //    },
-                    //    success: function (data) {
-                    //        console.info(data);
-                    //    }
-                    //});
-                    //$.ajax({
-                    //    url: 'https://edu.santhawa.lk/apiv1/login/check',
-                    //    headers: { "Authorization": vueLogins.cred.token },
-                    //    success: function (data) {
-                    //        console.info(data);
-                    //    }
-                    //});
                     $.ajax({
                         url: "https://edu.santhawa.lk/apiv1/login/check",
-                        data: {},
                         type: "GET",
-                        beforeSend: function (xhr) { xhr.setRequestHeader('Authorization', 'test-value'); },
-                        success: function () { alert('Success!'); }
-                    });
+                        beforeSend: function (xhr) { xhr.setRequestHeader('Authorization', getCookie('token')); },
+                        success: function () {
+                            switch (getCookie('userType')) {
+                                case '1': window.location.href = "/Citizen/Home"; break;//Citizen
+                                case '2': window.location.href = "/Officer/Citizens"; break;//Officer
+                                case '3': window.location.href = "/Comapny/SearchQualification"; break;//Agent
+                            } }
+                    })
+                        .fail(function (response) { eraseCookie("token"); window.location.href = "/Login"});
                 },
             },
             computed: {
@@ -117,13 +107,21 @@
 
             },
         });
-        $.ajax({
-            url: "https://edu.santhawa.lk/apiv1/login/check",
-            data: {},
-            type: "GET",
-            beforeSend: function (xhr) { xhr.setRequestHeader('Authorization', 'test-value'); },
-            success: function () { alert('Success!'); }
-        });
+        if (getCookie('token') != null) {
+            $.ajax({
+                url: "https://edu.santhawa.lk/apiv1/login/check",
+                type: "GET",
+                beforeSend: function (xhr) { xhr.setRequestHeader('Authorization', getCookie('token')); },
+                success: function () {
+                    switch (getCookie('userType')) {
+                        case '1': window.location.href = "/Citizen/Home"; break;//Citizen
+                        case '2': window.location.href = "/Officer/Citizens"; break;//Officer
+                        case '3': window.location.href = "/Comapny/SearchQualification"; break;//Agent
+                    }
+                }
+            })
+                .fail(function (response) { eraseCookie("token"); window.location.href = "/Login" });
+        }
     </script>
 }
 
