@@ -1,0 +1,96 @@
+﻿
+@{
+    ViewBag.Title = "ResponseDetail";
+    Layout = "~/Views/Shared/_CitizenLayout.cshtml";
+}
+<div id="divCitizenComplaint" class="justify-content-center" v-cloak>
+    <div class="jumbotron">
+        <div class="card-body ">
+            <form id="frmCitizenComplaint">
+                <h3> Citizen Complain</h3>
+                <div class="form-row">
+                    <div class="form-group col-8">
+                        <div class="col-12 float-start px-0 px-md-1">
+                            <label class="form-label"></label>
+                            <textarea id="txtComplaint" name="txtComplaint" class="form-control text-area" placeholder="" v-model="complaint.complaint" rows="3" readonly></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-8">
+                        <div class="col-12 float-start px-0 px-md-1">
+                            <label class="form-label">Response</label>
+                            <textarea id="txtComplaint" name="txtComplaint" class="form-control text-area" placeholder="" v-model="complaint.response" rows="3" readonly></textarea>
+                            <input type="text" class="form-control" placeholder="" v-model="complaint.officer_id" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="card-body">
+                      
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const param = urlParams.get('id');
+
+    Vue.config.devtools = true;
+
+    if (vueCitizenComplaint != null) {
+        vueCitizenComplaint.$destroy();
+    }
+
+
+        var vueCitizenComplaint = new Vue({
+            el: '#divCitizenComplaint',
+        data: {
+            editCitizen: {},
+            professions: [],
+            professionId: null,
+            location: {},
+            complaint: { citizen_id: 5 },
+            complaints: {},
+            editComplaintId: { id: param },
+     
+
+
+
+        },
+        methods: {
+            CreateComplaint() {
+                $.post('https://edu.santhawa.lk/apiv1/complaint', vueCitizenComplaint.complaint, function (response) {
+                    alert("You have successfully lodged a complaint");
+                })
+                    .fail(function (response) { alert('Error' + response.responseText) });
+            },
+            getComplaintByCitizenId() {
+                $.get('https://edu.santhawa.lk/apiv1/complaint/' + String(this.editComplaintId.id), function (data, status, response) {
+                    vueCitizenComplaint.complaint = data;
+                })
+            },
+
+
+
+        },
+        computed: {
+        },
+        mounted() {
+            if (param != null)
+                getComplaintByCitizenId();
+
+        },
+    });
+    </script>
+}
+
+
+
+
+

@@ -33,5 +33,15 @@ namespace WEB.Controllers
         {
             return View();
         }
+
+        public ActionResult CitizenComplaint()
+        {
+            return View();
+        }
+
+        public ActionResult ResponseDetail()
+        {
+            return View();
+        }
     }
 }

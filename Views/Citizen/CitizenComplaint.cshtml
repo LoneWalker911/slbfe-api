@@ -1,0 +1,122 @@
+﻿
+@{
+    ViewBag.Title = "CitizenComplaint";
+    Layout = "~/Views/Shared/_CitizenLayout.cshtml";
+}
+<div id="divCitizenComplaint" class="justify-content-center" v-cloak>
+    <div class="jumbotron">
+        <div class="card-body ">
+            <form id="frmCitizenComplaint">
+                <h3> Citizen Complain</h3>
+                <div class="form-row">
+                    <div class="form-group col-8">
+                        <div class="col-12 float-start px-0 px-md-1">
+                            <textarea id="txtComplaint" name="txtComplaint" class="form-control text-area" placeholder="Type Your Qualification Here !!!!" v-model="complaint.complaint" rows="3"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-4">
+                        <div class="form-field mb-2">
+                            <button type="button" @@click="CreateComplaint" class="col-6 btn btn-primary">Lodge Complaint</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="card-body">
+                        <b-table striped hover :items="complaints" :fields="fields">
+                            <template #cell(Actions)="data">
+                                <button type="button" class="btn btn-outline-primary" @@click="getComplainDetails(data.item.id)" title="Show">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-view-list" viewBox="0 0 16 16">
+                                        <path d="M3 4.5h10a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1H3zM1 2a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 2zm0 12a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 14z" />
+                                    </svg>
+                                </button>
+                            </template>
+                        </b-table>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+    Vue.config.devtools = true;
+
+    if (vueCitizenComplaint != null) {
+        vueCitizenComplaint.$destroy();
+    }
+
+
+        var vueCitizenComplaint = new Vue({
+            el: '#divCitizenComplaint',
+        data: {
+            editCitizen: {},
+            professions: [],
+            professionId: null,
+            location: {},
+            complaint: { citizen_id: 5 },
+            complaints: {},
+            fields: [
+                {
+                    key: 'complaint',
+                    label: 'Complaint',
+                    sortable: true
+                },
+                {
+                    key: 'added_at',
+                    label: 'Added At',
+                    sortable: false
+                },
+                {
+                    key: 'response_at',
+                    label: 'Response At',
+                    sortable: true,
+                },
+                {
+                    key: 'response',
+                    label: 'Response Status',
+                    sortable: true,
+                },
+                {
+                    key: 'actions',
+                    label: 'Actions',
+                }
+            ],
+
+
+
+
+        },
+        methods: {
+            CreateComplaint() {
+                $.post('https://edu.santhawa.lk/apiv1/complaint', vueCitizenComplaint.complaint, function (response) {
+                    alert("You have successfully lodged a complaint");
+                })
+                    .fail(function (response) { alert('Error' + response.responseText) });
+            },
+            getComplaintByCitizenId() {
+                $.get('https://edu.santhawa.lk/apiv1/citizen/' + this.complaint.citizen_id + '/complaint', function (data, status, response) {
+                    vueCitizenComplaint.complaints = data;
+                })
+            },
+            getComplainDetails(id) {
+                window.open("https://localhost:44354/Citizen/ResponseDetail?id=" + id);
+            },
+
+
+        },
+        computed: {
+        },
+        mounted() {
+
+            this.getComplaintByCitizenId();
+        },
+    });
+    </script>
+}
+
+
+

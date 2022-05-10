@@ -60,7 +60,7 @@
         var vueLogins = new Vue({
             el: '#divLogin',
             data: {
-                editLogin: { username: '999485356335', password: 'admin1234' },
+                editLogin: {},
                 cred: {},
 
 
@@ -75,8 +75,8 @@
                         vueLogins.validate();
                         switch (vueLogins.cred.userType) {
                             case '1': window.location.href("/Citizen/Home"); break;//Citizen
-                            case '2': window.location.href("https://facebook.com"); break;//Officer
-                            case '3': window.location.href("https://facebook.com"); break;//Agent
+                            case '2': window.location.href("/Officer/Citizens"); break;//Officer
+                            case '3': window.location.href("/Comapny/SearchQualification"); break;//Agent
                         }
 
                     })

@@ -185,6 +185,8 @@
     <Content Include="Views\Citizen\Home.cshtml" />
     <Content Include="Views\Shared\_OfficerLayout.cshtml" />
     <Content Include="Views\Shared\_CompanyLayout.cshtml" />
+    <Content Include="Views\Citizen\CitizenComplaint.cshtml" />
+    <Content Include="Views\Citizen\ResponseDetail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
