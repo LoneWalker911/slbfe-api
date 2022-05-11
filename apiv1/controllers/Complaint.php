@@ -21,14 +21,13 @@ class ComplaintCtrl
 
 /**
  * @url POST /complaint
- * @noAuth
+ *
  */
   public function fileComplaint($data)
   {
-      // if($GLOBALS['user_details']['user_id'] == $id && $GLOBALS['user_details']['user_type'] == 1){}
-      //   else if($GLOBALS['user_details']['user_type'] == 2){}
-      //     else
-      //       throw new PowerfulAPIException(401,'');
+      if($GLOBALS['user_details']['user_id'] == $id && $GLOBALS['user_details']['user_type'] == 1){}
+          else
+            throw new PowerfulAPIException(401,'');
 
         $database = new Database();
         $db = $database->connect();
@@ -55,10 +54,10 @@ class ComplaintCtrl
  */
   public function Response($id,$data)
   {
-      // if($GLOBALS['user_details']['user_id'] == $id && $GLOBALS['user_details']['user_type'] == 1){}
-      //   else if($GLOBALS['user_details']['user_type'] == 2){}
-      //     else
-      //       throw new PowerfulAPIException(401,'');
+      if($GLOBALS['user_details']['user_id'] == $id && $GLOBALS['user_details']['user_type'] == 1){}
+        else if($GLOBALS['user_details']['user_type'] == 2){}
+          else
+            throw new PowerfulAPIException(401,'');
 
         $database = new Database();
         $db = $database->connect();
@@ -66,14 +65,14 @@ class ComplaintCtrl
         $complaint = new Complaint($db);
 
         if(!isset($data->response) || !isset($data->officer_id))
-            throw new PowerfulAPIException(400,'1');
+            throw new PowerfulAPIException(400,'');
 
         $complaint->id = Validate::input($id);
         $complaint->officer_id = Validate::input($data->officer_id);
         $complaint->response = Validate::input($data->response);
 
         if(empty($complaint->response))
-          throw new PowerfulAPIException(400,'2');
+          throw new PowerfulAPIException(400,'');
 
 
         return $complaint->response();
@@ -82,42 +81,41 @@ class ComplaintCtrl
 
 /**
  * @url GET /complaint
- * @noAuth
+ *
  */
   public function getComplaints()
   {
-      // if($GLOBALS['user_details']['user_id'] == $id && $GLOBALS['user_details']['user_type'] == 1){}
-      //   else if($GLOBALS['user_details']['user_type'] == 2){}
-      //     else
-      //       throw new PowerfulAPIException(401,'');
+     if($GLOBALS['user_details']['user_type'] == 2){}
+        else
+          throw new PowerfulAPIException(401,'');
 
-            $database = new Database();
-            $db = $database->connect();
+          $database = new Database();
+          $db = $database->connect();
 
-            $complaint = new Complaint($db);
+          $complaint = new Complaint($db);
 
-            return $complaint->getComplaints();
+          return $complaint->getComplaints();
   }
 
 /**
  * @url GET /citizen/$id/complaint
- * @noAuth
+ *
  */
   public function getComplaintsByCitizenID($id)
   {
-      // if($GLOBALS['user_details']['user_id'] == $id && $GLOBALS['user_details']['user_type'] == 1){}
-      //   else if($GLOBALS['user_details']['user_type'] == 2){}
-      //     else
-      //       throw new PowerfulAPIException(401,'');
+      if($GLOBALS['user_details']['user_id'] == $id && $GLOBALS['user_details']['user_type'] == 1){}
+        else if($GLOBALS['user_details']['user_type'] == 2){}
+          else
+            throw new PowerfulAPIException(401,'');
 
-            $database = new Database();
-            $db = $database->connect();
+        $database = new Database();
+        $db = $database->connect();
 
-            $complaint = new Complaint($db);
+        $complaint = new Complaint($db);
 
-            $complaint->citizen_id=Validate::input($id);
+        $complaint->citizen_id=Validate::input($id);
 
-            return $complaint->getComplaintsById();
+        return $complaint->getComplaintsById();
   }
 
 /**
@@ -126,7 +124,7 @@ class ComplaintCtrl
  */
   public function getComplaintsByID($id)
   {
-      // if($GLOBALS['user_details']['user_id'] == $id && $GLOBALS['user_details']['user_type'] == 1){}
+      // if($GLOBALS['user_details']['user_type'] == 1){}
       //   else if($GLOBALS['user_details']['user_type'] == 2){}
       //     else
       //       throw new PowerfulAPIException(401,'');

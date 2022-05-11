@@ -22,7 +22,6 @@ class CitizenCtrl
 
   /**
    * @url GET /citizen
-   * @noAuth
    */
 public function readAll()
 {
@@ -75,10 +74,10 @@ public function readAll()
 }
 
 
-  /**
-   * @url GET /citizen/professions
-   * @noAuth
-   */
+/**
+ * @url GET /citizen/professions
+ * @noAuth
+ */
 public function readProfessions()
 {
   $database = new Database();
@@ -100,7 +99,7 @@ public function readProfessions()
       extract($row);
       array_push($professions,array('ID'=>$ID, 'Pro'=> $Profession)) ;
 
-    }
+  }
 
 
     // Output
@@ -121,37 +120,65 @@ public function readProfessions()
  */
 public function citizenUpdate($id,$data)
 {
-  // if($GLOBALS['user_details']['user_id'] == $id && $GLOBALS['user_details']['user_type'] == 1){}
-  //   else if($GLOBALS['user_details']['user_type'] == 2){}
-  //     else
-  //       throw new PowerfulAPIException(401,'');
+  if($GLOBALS['user_details']['user_id'] == $id
+      && $GLOBALS['user_details']['user_type'] == 1){}
+      else
+        throw new PowerfulAPIException(401,'');
 
-                $database = new Database();
-                $db = $database->connect();
+      $database = new Database();
+      $db = $database->connect();
 
 
-                if(isset($data->qualifications) && !empty($data->qualifications))
-                  {
-                    $citizenQ = new CitizenQualification($db);
+    if(isset($data->qualifications) &&
+    !empty($data->qualifications))
+      {
+        $citizenQ = new CitizenQualification($db);
 
-                    $citizenQ->id = Validate::input($id);
+        $citizenQ->id = Validate::input($id);
 
-                    $citizenQ->qualifications = Validate::input($data->qualifications);
+        $citizenQ->qualifications = Validate::input($data->qualifications);
 
-                    return $citizenQ->updateQ();
-                  }
+        return $citizenQ->updateQ();
+      }
 
-                  if(isset($data->latitude) && !empty($data->latitude) && isset($data->longitude) && !empty($data->longitude))
-                    {
-                      $citizen = new Citizen($db);
+      if(isset($data->email) &&  !empty($data->email)
+        && isset($data->profession) &&  !empty($data->profession)
+        && isset($data->Contact1) &&  !empty($data->Contact1)
+        && isset($data->ContactName1) &&  !empty($data->ContactName1)
+        && isset($data->Contact2) &&  !empty($data->Contact2)
+        && isset($data->ContactName2) &&  !empty($data->ContactName2)
+        && isset($data->affiliation) &&  !empty($data->affiliation))
+        {
+          $citizenQ = new Citizen($db);
 
-                      $citizen->id = Validate::input($id);
+          $citizenQ->id = Validate::input($id);
 
-                      $citizen->longitude = Validate::input($data->longitude);
-                      $citizen->latitude = Validate::input($data->latitude);
+          $citizenQ->email = Validate::input($data->email);
+          $citizenQ->profession = Validate::input($data->profession);
 
-                      return $citizen->updateLocation();
-                    }
+          $citizenQ->Contact1 = Validate::input($data->Contact1);
+          $citizenQ->ContactName1 = Validate::input($data->ContactName1);
+
+          $citizenQ->Contact2 = Validate::input($data->Contact2);
+          $citizenQ->ContactName2 = Validate::input($data->ContactName2);
+
+          $citizenQ->affiliation = Validate::input($data->affiliation);
+
+          return $citizenQ->updateDetails();
+        }
+
+      if(isset($data->latitude) && !empty($data->latitude)
+      && isset($data->longitude) && !empty($data->longitude))
+        {
+          $citizen = new Citizen($db);
+
+          $citizen->id = Validate::input($id);
+
+          $citizen->longitude = Validate::input($data->longitude);
+          $citizen->latitude = Validate::input($data->latitude);
+
+          return $citizen->updateLocation();
+        }
 
 
 
@@ -210,10 +237,9 @@ public function citizenReadQ($id)
  */
     public function citizenDelete($id)
     {
-        // if($GLOBALS['user_details']['user_id'] == $id && $GLOBALS['user_details']['user_type'] == 1){}
-        //   else if($GLOBALS['user_details']['user_type'] == 2){}
-        //     else
-        //       throw new PowerfulAPIException(401,'');
+         if($GLOBALS['user_details']['user_type'] == 2){}
+            else
+              throw new PowerfulAPIException(401,'');
 
               $database = new Database();
               $db = $database->connect();
@@ -231,10 +257,10 @@ public function citizenReadQ($id)
  */
   public function citizenContacts($id)
   {
-      // if($GLOBALS['user_details']['user_id'] == $id && $GLOBALS['user_details']['user_type'] == 1){}
-      //   else if($GLOBALS['user_details']['user_type'] == 2){}
-      //     else
-      //       throw new PowerfulAPIException(401,'');
+      if($GLOBALS['user_details']['user_id'] == $id && $GLOBALS['user_details']['user_type'] == 1){}
+        else if($GLOBALS['user_details']['user_type'] == 2){}
+          else
+            throw new PowerfulAPIException(401,'');
 
             $database = new Database();
             $db = $database->connect();
@@ -251,58 +277,56 @@ public function citizenReadQ($id)
  * @url GET /citizen/find
  *
  */
-  public function citizenQSearch()
-  {
-      // if($GLOBALS['user_details']['user_id'] == $id && $GLOBALS['user_details']['user_type'] == 1){}
-      //   else if($GLOBALS['user_details']['user_type'] == 2){}
-      //     else
-      //       throw new PowerfulAPIException(401,'');
+public function citizenQSearch()
+{ if($GLOBALS['user_details']['user_type'] == 3){}
+        else
+          throw new PowerfulAPIException(401,'');
 
-            $database = new Database();
-            $db = $database->connect();
+        $database = new Database();
+        $db = $database->connect();
 
-            $citizenQ = new CitizenQualification($db);
+        $citizenQ = new CitizenQualification($db);
 
-            $citizenQ->qualifications = Validate::input($_REQUEST['q']);
+        $citizenQ->qualifications = Validate::input($_REQUEST['q']);
 
-            $result = $citizenQ->search();;
-             // Get row count
-            $num = $result->rowCount();
+        $result = $citizenQ->search();;
+         // Get row count
+        $num = $result->rowCount();
 
-            // Check if any citizen
-            if($num > 0) {
-              // Citizen array
-              $citizens_arr = array();
-               //$citizens_arr['data'] = array();
+        // Check if any citizen
+        if($num > 0) {
+          // Citizen array
+          $citizens_arr = array();
+           //$citizens_arr['data'] = array();
 
-              while($row = $result->fetch(PDO::FETCH_ASSOC)) {
-                extract($row);
+          while($row = $result->fetch(PDO::FETCH_ASSOC)) {
+            extract($row);
 
-                $citizen_item = array(
-                  'id' => $id,
-                  'NIC' => $NIC,
-                  'first_name' => $first_name,
-                  'last_name' => $last_name,
-                  'latitude' => $latitude,
-                  'longitude' => $longitude,
-                  'profession' => $profession,
-                  'affiliation' => $affiliation,
-                  'reg_date' => $reg_date,
-                  'email' => $email
-                );
+            $citizen_item = array(
+              'id' => $id,
+              'NIC' => $NIC,
+              'first_name' => $first_name,
+              'last_name' => $last_name,
+              'latitude' => $latitude,
+              'longitude' => $longitude,
+              'profession' => $profession,
+              'affiliation' => $affiliation,
+              'reg_date' => $reg_date,
+              'email' => $email
+            );
 
-                // Push to "data"
-                array_push($citizens_arr, $citizen_item);
+            // Push to "data"
+            array_push($citizens_arr, $citizen_item);
 
-              }
+          }
 
-              // Output
-              return ($citizens_arr);
+          // Output
+          return ($citizens_arr);
 
-            } else {
-              // No Posts
-                throw new PowerfulAPIException(404, "No Citizens Found");
-            }
+        } else {
+          // No Posts
+            throw new PowerfulAPIException(404, "No Citizens Found");
+        }
 
 
     }
@@ -352,7 +376,6 @@ public function citizenReadQ($id)
     return $citizen_arr;
   }
 
-
   /**
    * @url GET /citizen/id/$id
    */
@@ -365,6 +388,7 @@ public function citizenReadQ($id)
 
       // Get ID
       $citizen->id = $id;
+
 
 
       if(!$citizen->readSingleById())
@@ -396,16 +420,17 @@ public function citizenReadQ($id)
     }
 
 
+
+
   /**
    * @url PUT /citizen/$id/validate
    *
    */
   public function citizenQValidate($id,$data)
   {
-    // if($GLOBALS['user_details']['user_id'] == $id && $GLOBALS['user_details']['user_type'] == 1){}
-    //   else if($GLOBALS['user_details']['user_type'] == 2){}
-    //     else
-    //       throw new PowerfulAPIException(401,'');
+      if($GLOBALS['user_details']['user_type'] == 2){}
+        else
+          throw new PowerfulAPIException(401,'');
 
           $database = new Database();
           $db = $database->connect();

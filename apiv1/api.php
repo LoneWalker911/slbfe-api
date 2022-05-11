@@ -29,6 +29,8 @@ require 'controllers/Citizen.php';
 require 'controllers/Officer.php';
 require 'controllers/Login.php';
 require 'controllers/Complaint.php';
+require 'controllers/Home.php';
+require 'controllers/Agent.php';
 
 include_once 'config/Database.php';
 
@@ -39,6 +41,7 @@ include_once '../models/CitizenQualification.php';
 include_once '../models/Profession.php';
 include_once '../models/Officer.php';
 include_once '../models/Complaint.php';
+include_once '../models/Agent.php';
 
 
 $server = new PowerfulAPI('production');
@@ -49,5 +52,6 @@ $server->addClass('LoginCtrl');
 $server->addClass('CitizenCtrl');
 $server->addClass('OfficerCtrl');
 $server->addClass('ComplaintCtrl');
+$server->addClass('HomeCtrl');
 $server->handle();
 ?>

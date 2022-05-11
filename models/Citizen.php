@@ -36,7 +36,12 @@ include_once 'Login.php';
     // Get Posts
     public function read() {
       // Create query
-      $query = 'SELECT `citizen`.*, `profession`.profession AS Prof FROM citizen , login, profession WHERE login.status=1 AND profession.id=citizen.profession AND citizen.id=login.user_id AND login.user_type=1 ORDER BY reg_date DESC';
+      $query = 'SELECT `citizen`.*,
+      `profession`.profession AS Prof FROM citizen ,
+      login, profession WHERE login.status=1
+      AND profession.id=citizen.profession
+      AND citizen.id=login.user_id
+      AND login.user_type=1 ORDER BY reg_date DESC';
 
       // Prepare statement
       $stmt = $this->conn->prepare($query);
@@ -69,6 +74,45 @@ include_once 'Login.php';
           // Execute query
         if($stmt->execute()){
               return array('status' => 1, 'message' => 'Location updated successfully.');
+          }
+        else{
+              throw new PowerfulAPIException(500, null);
+          }
+    }
+
+
+    public function updateDetails() {
+
+          if(!$this->isidValid())
+            throw new PowerfulAPIException(422,"Citizen ID Invalid");
+
+
+          // Create query
+          $query = 'UPDATE citizen SET email=:email,
+                    profession=:profession, affiliation=:affiliation,
+                    Contact1=:Contact1, Contact2=:Contact2,
+                    ContactName1=:ContactName1,
+                    ContactName2=:ContactName2 WHERE id=:id';
+
+          // Prepare statement
+          $stmt = $this->conn->prepare($query);
+
+
+          // Bind data
+          $stmt->bindParam(':id', $this->id);
+
+          $stmt->bindParam(':profession', $this->profession);
+          $stmt->bindParam(':email', $this->email);
+          $stmt->bindParam(':affiliation', $this->affiliation);
+          $stmt->bindParam(':Contact1', $this->Contact1);
+          $stmt->bindParam(':Contact2', $this->Contact2);
+          $stmt->bindParam(':ContactName1', $this->ContactName1);
+          $stmt->bindParam(':ContactName2', $this->ContactName2);
+
+
+          // Execute query
+        if($stmt->execute()){
+              return array('status' => 1, 'message' => 'Record updated successfully.');
           }
         else{
               throw new PowerfulAPIException(500, null);
@@ -121,11 +165,15 @@ include_once 'Login.php';
           return true;
     }
 
-
     // Get Single Citizen
-    public function readSingleById() {
+    public function read_singleById() {
           // Create query
-          $query = 'SELECT citizen.*, `profession`.`Profession` AS Prop, citizenqualifications.qualifications AS CQC, citizenqualifications.birthcert AS birthCert, citizenqualifications.cv AS CV, citizenqualifications.passport AS Passport, citizenqualifications.validation AS Validation
+          $query = 'SELECT citizen.*, `profession`.`Profession` AS Prop,
+          citizenqualifications.qualifications AS CQC,
+          citizenqualifications.birthcert AS birthCert,
+          citizenqualifications.cv AS CV,
+          citizenqualifications.passport AS Passport,
+          citizenqualifications.validation AS Validation
           FROM citizen
           LEFT JOIN citizenqualifications ON citizen.id = citizenqualifications.id
           JOIN profession ON citizen.profession = profession.ID
@@ -165,6 +213,57 @@ include_once 'Login.php';
           $this->Q = array('Qualifications'=>$row['CQC'], 'CV'=>$row['CV'], 'birthCert'=>$row['birthCert'], 'Passport'=>$row['Passport'], 'Validation'=>$row['Validation']);
 
           return true;
+    }
+
+
+  // Get Single Citizen
+  public function readSingleById() {
+        // Create query
+  $query = 'SELECT citizen.*, `profession`.`Profession` AS Prop,
+        citizenqualifications.qualifications AS CQC,
+        citizenqualifications.birthcert AS birthCert,
+        citizenqualifications.cv AS CV,
+        citizenqualifications.passport AS Passport,
+        citizenqualifications.validation AS Validation
+        FROM citizen
+        LEFT JOIN citizenqualifications ON citizen.id = citizenqualifications.id
+        JOIN profession ON citizen.profession = profession.ID
+        WHERE
+        citizen.id=?';
+
+        // Prepare statement
+        $stmt = $this->conn->prepare($query);
+
+        // Bind ID
+        $stmt->bindParam(1, $this->id);
+
+        // Execute query
+        $stmt->execute();
+
+        if($stmt->rowCount()!=1)
+          return false;
+
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // Set properties
+        $this->id = $row['id'];
+        $this->NIC = $row['NIC'];
+        $this->first_name = $row['first_name'];
+        $this->last_name = $row['last_name'];
+        $this->dob = $row['dob'];
+        $this->lat = $row['latitude'];
+        $this->long = $row['longitude'];
+        $this->profession = $row['Prop'];
+        $this->email = $row['email'];
+        $this->affiliation = $row['affiliation'];
+        $this->ContactName1 = $row['ContactName1'];
+        $this->ContactName2 = $row['ContactName2'];
+        $this->Contact1 = $row['Contact1'];
+        $this->Contact2 = $row['Contact2'];
+        $this->reg_date = $row['reg_date'];
+        $this->Q = array('Qualifications'=>$row['CQC'], 'CV'=>$row['CV'], 'birthCert'=>$row['birthCert'], 'Passport'=>$row['Passport'], 'Validation'=>$row['Validation']);
+
+        return true;
     }
 
 
@@ -310,55 +409,55 @@ include_once 'Login.php';
 
     // Delete Account
     public function delete() {
-          if(!$this->isidValid())
-            throw new PowerfulAPIException(422,"ID Invalid");
+      if(!$this->isidValid())
+        throw new PowerfulAPIException(422,"ID Invalid");
 
-          // Create query
-          $query = 'UPDATE login SET status=0 WHERE id = :id';
+      // Create query
+      $query = 'UPDATE login SET status=0 WHERE id = :id';
 
-          // Prepare statement
-          $stmt = $this->conn->prepare($query);
-
-
-          // Bind data
-          $stmt->bindParam(':id', $this->id);
-
-          // Execute query
-          if($stmt->execute()) {
-            return array('status' => 1, 'message' => 'Account Deactivated.');
-          }
+      // Prepare statement
+      $stmt = $this->conn->prepare($query);
 
 
-          return array('status' => 0, 'message' => 'Process has failed.');
+      // Bind data
+      $stmt->bindParam(':id', $this->id);
+
+      // Execute query
+      if($stmt->execute()) {
+        return array('status' => 1, 'message' => 'Account Deactivated.');
+      }
+
+
+      return array('status' => 0, 'message' => 'Process has failed.');
     }
 
 
     // Get Citizen Contacts
     public function getContacts() {
-          if(!$this->isidValid())
-            throw new PowerfulAPIException(422,"ID Invalid");
+      if(!$this->isidValid())
+        throw new PowerfulAPIException(422,"ID Invalid");
 
-          // Create query
-          $query = 'SELECT Contact1, ContactName1 , ContactName2, Contact2, email FROM ' . $this->table . ' WHERE id = :id';
-
-
-          // Prepare statement
-          $stmt = $this->conn->prepare($query);
+      // Create query
+      $query = 'SELECT Contact1, ContactName1 , ContactName2, Contact2, email FROM ' . $this->table . ' WHERE id = :id';
 
 
-          // Bind data
-          $stmt->bindParam(':id', $this->id);
-
-          // Execute query
-          if($stmt->execute()) {
-
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            return array('email' => $row['email'], 'Family' => array(array('Name' => $row['ContactName1'], 'Contact' => $row['Contact1']), array('Name' => $row['ContactName2'], 'Contact' => $row['Contact2'])));
-          }
+      // Prepare statement
+      $stmt = $this->conn->prepare($query);
 
 
-          return array('status' => 0, 'message' => 'Process has failed.');
+      // Bind data
+      $stmt->bindParam(':id', $this->id);
+
+      // Execute query
+      if($stmt->execute()) {
+
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return array('email' => $row['email'], 'Family' => array(array('Name' => $row['ContactName1'], 'Contact' => $row['Contact1']), array('Name' => $row['ContactName2'], 'Contact' => $row['Contact2'])));
+      }
+
+
+      return array('status' => 0, 'message' => 'Process has failed.');
     }
 
 

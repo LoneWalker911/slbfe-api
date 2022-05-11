@@ -52,7 +52,7 @@
     // Get Posts
     public function login() {
       // Create query
-      $query = 'SELECT user_type FROM ' . $this->table . ' WHERE username=? AND password=? AND status=1';
+      $query = 'SELECT user_type,user_id FROM ' . $this->table . ' WHERE username=? AND password=? AND status=1';
 
       // Prepare statement
       $stmt = $this->conn->prepare($query);
@@ -70,6 +70,7 @@
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
         $this->user_type = $row['user_type'];
+        $this->user_id = $row['user_id'];
 
       $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $charactersLength = strlen($characters);
@@ -90,7 +91,7 @@
         $pass=$stmt->execute();
       }while(!$pass);
 
-      return array('token' => $randomString, 'userType' => $this->user_type );
+      return array('token' => $randomString, 'userType' => $this->user_type, 'user_id' => $this->user_id);
     }
     else
     {

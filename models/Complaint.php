@@ -23,39 +23,39 @@ include_once 'Validate.php';
 
 
 
-    public function fileComplaint() {
+public function fileComplaint() {
 
-          $citizen = new Citizen($this->conn);
+    $citizen = new Citizen($this->conn);
 
-          $citizen->id = $this->citizen_id;
+    $citizen->id = $this->citizen_id;
 
-          if(!$citizen->isidValid())
-            throw new PowerfulAPIException(422,"Citizen ID Invalid - 3");
-
-
-          // Create query
-          $query = 'INSERT INTO complaints
-                      (citizen_id, complaint)
-                    VALUES
-                      (:citizen_id, :complaint)';
-
-          // Prepare statement
-          $stmt = $this->conn->prepare($query);
+    if(!$citizen->isidValid())
+      throw new PowerfulAPIException(422,"Citizen ID Invalid");
 
 
-          // Bind data
-          $stmt->bindParam(':citizen_id', $this->citizen_id);
-          $stmt->bindParam(':complaint', $this->complaint);
+    // Create query
+    $query = 'INSERT INTO complaints
+                (citizen_id, complaint)
+              VALUES
+                (:citizen_id, :complaint)';
+
+    // Prepare statement
+    $stmt = $this->conn->prepare($query);
 
 
-          // Execute query
-        if($stmt->execute()){
-              return array('status' => 1, 'message' => 'Complaint added successfully.');
-          }
-        else{
-              return array('status' => 0, 'message' => 'Process has failed.');
-          }
+    // Bind data
+    $stmt->bindParam(':citizen_id', $this->citizen_id);
+    $stmt->bindParam(':complaint', $this->complaint);
+
+
+    // Execute query
+  if($stmt->execute()){
+        return array('status' => 1, 'message' => 'Complaint added successfully.');
     }
+  else{
+        return array('status' => 0, 'message' => 'Process has failed.');
+    }
+}
 
 
     public function getComplaints() {
@@ -75,8 +75,6 @@ include_once 'Validate.php';
 
             while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
               extract($row);
-
-              if($response_at==null)
 
 
               $complaint = array(
@@ -154,7 +152,10 @@ include_once 'Validate.php';
     public function getComplaintsId() {
 
           // Create query
-          $query = 'SELECT * FROM complaints WHERE id=? ORDER BY added_at ASC';
+          $query = 'SELECT complaints.*, officer.last_name AS officer
+                    FROM complaints
+                    LEFT JOIN officer ON complaints.officer_id=officer.id
+                    WHERE complaints.id=?';
 
           // Prepare statement
           $stmt = $this->conn->prepare($query);
@@ -176,6 +177,7 @@ include_once 'Validate.php';
                 'citizen_id' => $citizen_id,
                 'complaint' => $complaint,
                 'officer_id' => $officer_id,
+                'officer' => $officer,
                 'response' => $response,
                 'added_at' => $added_at,
                 'response_at' => $response_at
@@ -186,7 +188,7 @@ include_once 'Validate.php';
 
             }
 
-          return $complaints_arr;
+          return $complaint;
         }
         else
             throw new PowerfulAPIException(404, "No Complaints Found");
@@ -222,7 +224,7 @@ include_once 'Validate.php';
     public function response() {
 
           if(!$this->isidValid())
-            throw new PowerfulAPIException(422,"Complaint ID Invalid / Already Responded123");
+            throw new PowerfulAPIException(422,"Complaint ID Invalid / Already Responded");
 
 
           // Create query
