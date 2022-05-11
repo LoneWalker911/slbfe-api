@@ -56,8 +56,7 @@
 
                 xhr.onreadystatechange = function () {
                     if (xhr.readyState === 4) {
-                        console.log(xhr.status);
-                        console.log(xhr.responseText);
+                        notifySuccess("Qualifications Uploaded successfully!");
                     }
                 };
 
@@ -100,10 +99,10 @@
                     processData: false,
                     success: function (response) {
                         if (response != 0) {
-                            alert('file uploaded');
+                            notifySuccess("Document Uploaded successfully!");
                         }
                         else {
-                            alert('file not uploaded');
+                            notifyError("Error Occurred!");
                         }
                     },
                 });

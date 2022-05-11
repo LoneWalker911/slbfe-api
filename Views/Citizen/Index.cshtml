@@ -1,0 +1,66 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_CitizenLayout.cshtml";
+}
+
+<div id="divLogin">
+    <div class="text-center">
+
+        <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
+
+            <img src="https://www.careerfirst.lk/sites/default/files/sri-lanka-bureau-of-foreign-employment-cover_0.jpg" class="img-fluid" alt="Responsive image">
+            <main role="main" class="inner cover">
+                <h1 class="cover-heading">Vision </h1>
+                <p class="lead">“Sri Lanka to be the best choice for competent human resources for overseas market”</p>
+                <h1 class="cover-heading">Mission  </h1>
+                <p class="lead">“Create efficient and equitable pathways for people to benefit from their skills in overseas employment markets securing interests of all stakeholders while contributing to economic growth”</p>
+
+            </main>
+
+        </div>
+
+    </div>
+</div>
+@section Scripts {
+
+    <script>
+        Vue.config.devtools = true;
+
+        if (vueLogins != null) {
+            vueLogins.$destroy();
+        }
+
+        var vueLogins = new Vue({
+            el: '#divLogin',
+            data: {
+                editLogin: {},
+                cred: {},
+
+
+
+            },
+            methods: {
+            },
+            computed: {
+            },
+            mounted() {
+
+            },
+        });
+        if (getCookie('token') != null) {
+            $.ajax({
+                url: "https://edu.santhawa.lk/apiv1/login/check",
+                type: "GET",
+                beforeSend: function (xhr) { xhr.setRequestHeader('Authorization', getCookie('token')); },
+                success: function () { }
+            })
+                .fail(function (response) { eraseCookie("token"); window.location.href = "/Login"; });
+        }
+        else {
+            window.location.href = "/Login";
+        }
+    </script>
+}
+
+

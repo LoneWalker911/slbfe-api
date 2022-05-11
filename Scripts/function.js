@@ -20,3 +20,27 @@ function getCookie(name) {
 function eraseCookie(name) {
     document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }
+
+function notifySuccess(message) {
+    iziToast.success({
+        title: '',
+        message: typeof message === 'undefined' ? 'Data has been updated successfully!' : message,
+        position: 'topCenter',
+        color: 'green',
+        timeout: 2500,
+        progressBar: false
+    });
+}
+function notifyError(message) {
+    iziToast.error({
+        message: typeof message === 'undefined' ? 'An error occurred!' : message,
+        position: 'topCenter',
+        timeout: 2500,
+        progressBar: false
+    });
+}
+function logout() {
+    eraseCookie('token');
+    window.location.href = "/Login";
+
+}

@@ -63,6 +63,7 @@
                 $.get('https://edu.santhawa.lk/apiv1/complaint/' + String(this.editComplaintId.id), function (data, status, response) {
                     vueCitizenComplaint.complaint = data;
                 })
+                    .fail(function (response) { notifyError("Error Occurred"); });
             },
             sendHeaders() {
                 $.ajaxSetup({
@@ -84,7 +85,19 @@
                 this.getComplaintByCitizenId();
 
              },
-    });
+        });
+        if (getCookie('token') != null) {
+            $.ajax({
+                url: "https://edu.santhawa.lk/apiv1/login/check",
+                type: "GET",
+                beforeSend: function (xhr) { xhr.setRequestHeader('Authorization', getCookie('token')); },
+                success: function () { }
+            })
+                .fail(function (response) { eraseCookie("token"); window.location.href = "/Login"; });
+        }
+        else {
+            window.location.href = "/Login";
+        }
     </script>
 }
 

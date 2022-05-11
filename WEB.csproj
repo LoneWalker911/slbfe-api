@@ -135,6 +135,8 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\CitizenIndex.css" />
+    <Content Include="Content\iziToast.css" />
     <Content Include="Content\jquery.datetimepicker.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -144,6 +146,7 @@
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\function.js" />
+    <Content Include="Scripts\iziToast.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
     <Content Include="Scripts\jquery-3.4.1.slim.js" />
@@ -173,7 +176,6 @@
     <Content Include="Views\Citizen\Register.cshtml" />
     <Content Include="Views\Home\Test.cshtml" />
     <Content Include="Views\Home\Map.cshtml" />
-    <Content Include="Views\Login\Login.cshtml" />
     <Content Include="Views\Shared\_LoginLayoutPage.cshtml" />
     <Content Include="Views\Login\Index.cshtml" />
     <Content Include="Views\Citizen\Qualification.cshtml" />
@@ -190,6 +192,8 @@
     <Content Include="Views\Officer\Complaint.cshtml" />
     <Content Include="Views\Officer\ResponseDetail.cshtml" />
     <Content Include="Views\Citizen\UpdateLocation.cshtml" />
+    <Content Include="Views\Shared\_HomeLayout.cshtml" />
+    <Content Include="Views\Citizen\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

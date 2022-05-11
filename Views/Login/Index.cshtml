@@ -39,7 +39,7 @@
                             </div>
                         </div>
                         <p>
-                            Don't have an account? <a href="/Citizen">Register here</a>
+                            Don't have an account? <a href="/Citizen/Register">Register here</a>
                         </p>
                     </form>
                 </div>
@@ -77,13 +77,13 @@
                       
                         vueLogins.validate();
                         switch (vueLogins.cred.userType) {
-                            case '1': window.location.href="/Citizen/Home"; break;//Citizen
+                            case '1': window.location.href="/Citizen/Index"; break;//Citizen
                             case '2': window.location.href="/Officer/Citizens"; break;//Officer
-                            case '3': window.location.href="/Comapny/SearchQualification"; break;//Agent
+                            case '3': window.location.href ="/Company/SearchQualification"; break;//Agent
                         }
 
                     })
-                        .fail(function (response) { alert('Error' + response.responseText) });
+                        .fail(function (response) { notifyError("Invalid Username / Password"); });
 
                 },
                 validate() {
@@ -93,9 +93,9 @@
                         beforeSend: function (xhr) { xhr.setRequestHeader('Authorization', getCookie('token')); },
                         success: function () {
                             switch (getCookie('userType')) {
-                                case '1': window.location.href = "/Citizen/Home"; break;//Citizen
+                                case '1': window.location.href = "/Citizen/Index"; break;//Citizen
                                 case '2': window.location.href = "/Officer/Citizens"; break;//Officer
-                                case '3': window.location.href = "/Comapny/SearchQualification"; break;//Agent
+                                case '3': window.location.href = "/Company/SearchQualification"; break;//Agent
                             } }
                     })
                         .fail(function (response) { eraseCookie("token"); window.location.href = "/Login"});
@@ -114,9 +114,9 @@
                 beforeSend: function (xhr) { xhr.setRequestHeader('Authorization', getCookie('token')); },
                 success: function () {
                     switch (getCookie('userType')) {
-                        case '1': window.location.href = "/Citizen/Home"; break;//Citizen
+                        case '1': window.location.href = "/Citizen/Index"; break;//Citizen
                         case '2': window.location.href = "/Officer/Citizens"; break;//Officer
-                        case '3': window.location.href = "/Comapny/SearchQualification"; break;//Agent
+                        case '3': window.location.href = "/Company/SearchQualification"; break;//Agent
                     }
                 }
             })

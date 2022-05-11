@@ -156,9 +156,9 @@
             methods: {
                 addCitizen() {
                     $.post('https://edu.santhawa.lk/apiv1/citizen', vueCitizens.editCitizen, function (response) {
-                        alert("success");
+                        notifySuccess("Data Saved successfully!");
                     })
-                        .fail(function (response) { alert('Error' + response.responseText) });
+                        .fail(function (response) { notifyError("Error Occurred"); });
                 },
                 getProfessions() {
                     $.get('https://edu.santhawa.lk/apiv1/citizen/professions?format=json', function (data, status, response) {
@@ -223,6 +223,7 @@
                 format: 'd/m/Y'
             });
         });
+       
     </script>
 }
 

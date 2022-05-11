@@ -63,8 +63,6 @@
                     type: 'GET',
                     contentType: 'application/json',
                     success: function (data, status, response) {
-                        console.log(data);
-                        clearMarkers();
                         vueLocationUpdate.editCitizen = JSON.parse(response.responseText);
                         var myLatlng = new google.maps.LatLng((vueLocationUpdate.editCitizen.latitude), (vueLocationUpdate.editCitizen.longitude))
                         var marker = new google.maps.Marker({ position: myLatlng, title: "Citizen's Location", });
@@ -135,7 +133,19 @@
                 this.getCitizenDetail();
 
             },
-    });
+        });
+        if (getCookie('token') != null) {
+            $.ajax({
+                url: "https://edu.santhawa.lk/apiv1/login/check",
+                type: "GET",
+                beforeSend: function (xhr) { xhr.setRequestHeader('Authorization', getCookie('token')); },
+                success: function () { }
+            })
+                .fail(function (response) { eraseCookie("token"); window.location.href = "/Login"; });
+        }
+        else {
+            window.location.href = "/Login";
+        }
     </script>
 }
 

@@ -119,10 +119,10 @@
                             <a :href="editCitizen.Q.Passport">Download Passport Here..</a>
                         </div>
                     </div>
-                    <div class="form-row">
+                    <div  class="form-row">
                         <div class="col-6 float-start px-0 px-md-1">
                             <div class="form-field mb-2">
-                                <button type="button" @@click="selectCitizen" class="col-12 btn btn-primary">Select</button>
+                                <button type="button"  @@click="selectCitizen" class=" btn btn-primary">Select</button>
                             </div>
                         </div>
                     </div>
@@ -222,7 +222,18 @@
 
         },
     });
-
+        if (getCookie('token') != null) {
+            $.ajax({
+                url: "https://edu.santhawa.lk/apiv1/login/check",
+                type: "GET",
+                beforeSend: function (xhr) { xhr.setRequestHeader('Authorization', getCookie('token')); },
+                success: function () { }
+            })
+                .fail(function (response) { eraseCookie("token"); window.location.href = "/Login"; });
+        }
+        else {
+            window.location.href = "/Login";
+        }
     </script>
 }
 

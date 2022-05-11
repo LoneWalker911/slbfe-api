@@ -55,7 +55,7 @@
                     <div class="col-6 float-start px-0 px-md-1">
                         <div class="form-field mb-2">
                             <label class="form-label">NIC</label>
-                            <input type="text" class="form-control" placeholder="" v-model="editCitizen.nic" disabled>
+                            <input type="text" class="form-control" placeholder="" v-model="editCitizen.NIC" disabled>
                         </div>
                     </div>
                     <div class="col-6 float-start px-0 px-md-1">
@@ -133,11 +133,24 @@
 
         },
         methods: {
+            getCitizenDetail() {
+                $.ajax({
+                    url: 'https://edu.santhawa.lk/apiv1/citizen/id/' + String(getCookie('userId')),
+                    type: 'GET',
+                    contentType: 'application/json',
+                    success: function (data, status, response) {
+                        vueCitizens.editCitizen = JSON.parse(response.responseText);
+                       
+                    },
+                });
+            },
             addCitizen() {
                 $.post('https://edu.santhawa.lk/apiv1/citizen', vueCitizens.editCitizen, function (response) {
-                    alert("success");
+                  
+                    
                 })
-                    .fail(function (response) { alert('Error' + response.responseText) });
+
+                    .fail(function (response) { notifyError("Error Occurred"); });
             },
             getProfessions() {
                 $.get('https://edu.santhawa.lk/apiv1/citizen/professions?format=json', function (data, status, response) {
@@ -192,15 +205,28 @@
             this.sendHeaders();
             this.getProfessions();
             window.initMap = this.initMap;
+            this.getCitizenDetail();
 
         },
     });
-    $(function () {
-        jQuery('.datepicker-input').datetimepicker({
-            timepicker: false,
-            format: 'd/m/Y'
+        $(function () {
+            jQuery('.datepicker-input').datetimepicker({
+                timepicker: false,
+                format: 'd/m/Y'
+            });
         });
-    });
+        if (getCookie('token') != null) {
+            $.ajax({
+                url: "https://edu.santhawa.lk/apiv1/login/check",
+                type: "GET",
+                beforeSend: function (xhr) { xhr.setRequestHeader('Authorization', getCookie('token')); },
+                success: function () { }
+            })
+                .fail(function (response) { eraseCookie("token"); window.location.href = "/Login"; });
+        }
+        else {
+            window.location.href = "/Login";
+        }
     </script>
 }
 

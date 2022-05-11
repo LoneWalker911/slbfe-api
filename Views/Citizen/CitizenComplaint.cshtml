@@ -7,7 +7,7 @@
     <div class="jumbotron">
         <div class="card-body ">
             <form id="frmCitizenComplaint">
-                <h3> Citizen Complain</h3>
+                <h3> Citizen Complaint</h3>
                 <div class="form-row">
                     <div class="form-group col-8">
                         <div class="col-12 float-start px-0 px-md-1">
@@ -108,10 +108,10 @@
     methods: {
         CreateComplaint() {
             $.post('https://edu.santhawa.lk/apiv1/complaint', vueCitizenComplaint.complaint, function (response) {
-                alert("You have successfully lodged a complaint");
+                notifySuccess("You have successfully lodged a complaint");
                 
             })
-                .fail(function (response) { alert('Error' + response.responseText) });
+                .fail(function (response) { notifyError("Error Occurred"); });
         },
         getComplaintByCitizenId() {
             $.get('https://edu.santhawa.lk/apiv1/citizen/' + this.complaint.citizen_id + '/complaint', function (data, status, response) {
@@ -146,7 +146,18 @@
         },
 
     });
-
+    if (getCookie('token') != null) {
+        $.ajax({
+            url: "https://edu.santhawa.lk/apiv1/login/check",
+            type: "GET",
+            beforeSend: function (xhr) { xhr.setRequestHeader('Authorization', getCookie('token')); },
+            success: function () { }
+        })
+            .fail(function (response) { eraseCookie("token"); window.location.href = "/Login"; });
+    }
+    else {
+        window.location.href = "/Login";
+    }
     
 
 </script>

@@ -1,7 +1,7 @@
 ﻿
 @{
     ViewBag.Title = "ResponseDetail";
-    Layout = "~/Views/Shared/_CitizenLayout.cshtml";
+    Layout = "~/Views/Shared/_OfficerLayout.cshtml";
 }
 <div id="divCitizenComplaint" class="justify-content-center" v-cloak>
     <div class="jumbotron">
@@ -102,6 +102,18 @@
                 this.getComplaintByComplaintId();
 
         },
-    });
+        });
+        if (getCookie('token') != null) {
+            $.ajax({
+                url: "https://edu.santhawa.lk/apiv1/login/check",
+                type: "GET",
+                beforeSend: function (xhr) { xhr.setRequestHeader('Authorization', getCookie('token')); },
+                success: function () { }
+            })
+                .fail(function (response) { eraseCookie("token"); window.location.href = "/Login"; });
+        }
+        else {
+            window.location.href = "/Login";
+        }
     </script>
 }
